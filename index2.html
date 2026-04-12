@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExhiBytes — Legal Exhibit Bundle Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #06080e;
+      --panel:   #0b0f1a;
+      --raised:  #111827;
+      --blue:    #2563eb;
+      --blue2:   #3b82f6;
+      --blue3:   #60a5fa;
+      --accent:  #38bdf8;
+      --accent2: #7dd3fc;
+      --aborder: rgba(56,189,248,0.28);
+      --cream:   #e8e3d8;
+      --green:   #10b981;
+      --muted:   rgba(255,255,255,0.45);
+      --border:  rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: white;
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
+      );
+    }
+
+    /* ══ TOP NAV ═══════════════════════════════════════════════ */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(6,8,14,0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      height: 54px;
+      display: flex; align-items: center;
+      padding: 0 2rem;
+      gap: 2rem;
+    }
+    nav::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, var(--blue) 0%, var(--accent) 50%, transparent 100%);
+      opacity: 0.6;
+    }
+    .nav-logo {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 900; font-size: 1.2rem;
+      letter-spacing: -0.01em; line-height: 1;
+      text-decoration: none; color: white;
+      flex-shrink: 0;
+    }
+    .nav-logo span { color: var(--blue3); }
+
+    nav ul {
+      list-style: none; display: flex; align-items: center;
+      gap: 0.1rem; flex: 1;
+    }
+    nav ul li a {
+      display: flex; align-items: center; gap: 0.35rem;
+      padding: 0.35rem 0.7rem; border-radius: 3px;
+      color: var(--muted); text-decoration: none;
+      font-size: 0.68rem; font-weight: 500;
+      transition: color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    nav ul li a:hover { color: var(--accent); background: rgba(56,189,248,0.07); }
+    .nav-num { color: rgba(56,189,248,0.4); font-size: 0.55rem; }
+
+    .nav-dl {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--accent); color: var(--ink);
+      font-weight: 700; font-size: 0.72rem;
+      padding: 0.45rem 1rem; border-radius: 3px;
+      text-decoration: none; letter-spacing: 0.03em;
+      font-family: 'IBM Plex Mono', monospace;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .nav-dl:hover { background: var(--accent2); }
+
+    /* ══ CONTENT WRAPPER ═══════════════════════════════════════ */
+    .wrap {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+    }
+
+    /* ══ HERO ══════════════════════════════════════════════════ */
+    .hero {
+      min-height: calc(100vh - 54px);
+      display: grid; grid-template-columns: 1fr 1fr;
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(56,189,248,0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+
+    .hero-left {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 5rem 3rem 4rem 5rem;
+      position: relative; z-index: 1;
+    }
+
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.75rem;
+    }
+    .hero-kicker::before {
+      content: '';
+      display: inline-block; width: 20px; height: 2px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 900;
+      font-size: clamp(3.5rem, 6vw, 6rem);
+      letter-spacing: -0.03em; line-height: 0.92;
+    }
+    .hero-title span { color: var(--blue3); }
+
+    .hero-byline-text {
+      margin-top: 1.5rem;
+      font-size: 0.68rem; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    .hero-rule {
+      width: 40px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      margin: 1.5rem 0;
+    }
+
+    .hero-tagline {
+      font-family: 'EB Garamond', Georgia, serif;
+      font-size: clamp(1rem, 1.6vw, 1.25rem);
+      color: rgba(255,255,255,0.8);
+      font-style: italic; line-height: 1.65;
+      max-width: 400px; margin-bottom: 2rem;
+    }
+    .hero-tagline strong { font-style: normal; color: var(--accent); font-weight: 600; }
+
+    .hero-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .btn-accent {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: var(--accent); color: var(--ink);
+      font-weight: 700; font-size: 0.78rem;
+      padding: 0.75rem 1.5rem; border-radius: 3px;
+      text-decoration: none; letter-spacing: 0.03em;
+      font-family: 'IBM Plex Mono', monospace;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-accent:hover { background: var(--accent2); transform: translateY(-1px); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      background: transparent; color: rgba(255,255,255,0.65);
+      font-size: 0.78rem; padding: 0.75rem 1.25rem;
+      border-radius: 3px; text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.18);
+      font-family: 'IBM Plex Mono', monospace;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Hero right: app mockup */
+    .hero-right {
+      position: relative; background: var(--panel);
+      border-left: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      padding: 2.5rem 2rem; overflow: hidden;
+    }
+    .hero-right::after {
+      content: 'EXHIBYTES';
+      position: absolute; top: 1.5rem; right: 1.5rem;
+      font-size: 0.55rem; color: rgba(255,255,255,0.06);
+      letter-spacing: 0.25em; writing-mode: vertical-rl;
+    }
+
+    /* ── App mockup inside hero ──────────────────────────────── */
+    .app-mockup {
+      width: 100%; max-width: 480px;
+      border-radius: 8px; overflow: hidden;
+      border: 1px solid rgba(56,189,248,0.2);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+      position: relative; z-index: 1;
+    }
+    .mockup-bar {
+      background: #040810; padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .md { width: 9px; height: 9px; border-radius: 50%; }
+    .md.r { background:#ef4444; } .md.y { background:#f59e0b; } .md.g { background:#22c55e; }
+    .mockup-title-txt { flex:1; text-align:center; font-size:0.6rem; color:rgba(255,255,255,0.25); }
+    .mockup-body { display: flex; min-height: 300px; }
+
+    .m-sidebar {
+      width: 140px; background: #090d18; flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column;
+    }
+    .m-sb-brand {
+      padding: 10px 12px 9px;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background: linear-gradient(135deg,#0f172a 0%,#1a2332 60%,#1e3a5f 100%);
+    }
+    .m-sb-logo { font-family:'Exo 2',sans-serif; font-weight:900; font-size:0.95rem; letter-spacing:-0.01em; }
+    .m-sb-logo span { color:var(--blue3); }
+    .m-sb-by { font-size:0.5rem; color:rgba(255,255,255,0.4); margin-top:2px; font-family:'IBM Plex Mono',monospace; }
+    .m-sb-row { padding:7px 12px; border-bottom:1px solid rgba(255,255,255,0.05); }
+    .m-sb-lbl { font-size:0.5rem; color:var(--blue3); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:2px; }
+    .m-sb-val { font-size:0.6rem; font-weight:600; }
+    .m-sb-val.lbl { color:var(--blue3); font-family:monospace; }
+    .m-sb-count { font-size:1.2rem; font-weight:700; }
+
+    .m-main { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+    .m-toolbar {
+      height:34px; background:#121a2a;
+      border-bottom:1px solid rgba(255,255,255,0.07);
+      display:flex; align-items:center; gap:5px; padding:0 8px; flex-shrink:0;
+    }
+    .m-btn {
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+      border-radius:3px; padding:2px 7px; font-size:0.5rem;
+      color:rgba(255,255,255,0.75); white-space:nowrap;
+    }
+    .m-btn.blue { background:rgba(37,99,235,0.25); border-color:rgba(96,165,250,0.35); color:var(--blue3); }
+    .m-th, .m-tr {
+      display:grid; grid-template-columns:48px 1fr 62px;
+      padding:5px 10px; font-size:0.55rem;
+    }
+    .m-th {
+      background:rgba(255,255,255,0.03);
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      color:var(--muted); text-transform:uppercase; letter-spacing:0.06em;
+    }
+    .m-tr { border-bottom:1px solid rgba(255,255,255,0.04); align-items:center; }
+    .m-tr.sel { background:rgba(37,99,235,0.12); }
+    .m-lbl { color:var(--blue3); font-weight:700; font-family:monospace; }
+    .m-desc { color:rgba(255,255,255,0.68); }
+    .m-date { color:var(--muted); font-size:0.5rem; }
+
+    .m-preview {
+      width: 130px; background:#fff; border-left:1px solid rgba(255,255,255,0.07);
+      display:flex; flex-direction:column; flex-shrink:0;
+    }
+    .m-prev-hdr {
+      padding:5px 8px; border-bottom:1px solid #e5e7eb;
+      background:#f9fafb; display:flex; align-items:center; justify-content:space-between;
+    }
+    .m-prev-tag { font-size:0.5rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.05em; }
+    .m-prev-lbl { font-size:0.6rem; color:var(--blue); font-weight:700; font-family:monospace; }
+    .m-prev-body { flex:1; background:#f3f4f6; padding:6px; display:flex; flex-direction:column; gap:4px; }
+    .m-page { background:white; border-radius:1px; box-shadow:0 1px 3px rgba(0,0,0,0.12); }
+    .m-page-inner { padding:6px; }
+    .m-line { height:3px; background:#e5e7eb; border-radius:1px; margin-bottom:3px; }
+    .m-line.s { width:55%; } .m-line.m { width:78%; } .m-line.h { background:rgba(37,99,235,0.2); }
+
+    /* ══ SECTION COMMONS ═══════════════════════════════════════ */
+    section { padding: 5rem 0; }
+    .section-eyebrow {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .eyebrow-line { flex: 0 0 28px; height: 1px; background: var(--accent); }
+    .eyebrow-text {
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent);
+    }
+    .big-heading {
+      font-family: 'Exo 2', sans-serif; font-weight: 800;
+      font-size: clamp(1.9rem, 3.5vw, 3rem);
+      letter-spacing: -0.025em; line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .garamond-sub {
+      font-family: 'EB Garamond', serif;
+      font-style: italic; font-size: 1.05rem;
+      color: rgba(255,255,255,0.58); line-height: 1.7;
+      max-width: 560px; margin-bottom: 2.5rem;
+    }
+
+    /* ══ ABOUT ═════════════════════════════════════════════════ */
+    #about { background: var(--ink); border-bottom: 1px solid var(--border); }
+    .about-grid {
+      display: grid; grid-template-columns: 280px 1fr;
+      gap: 4rem; align-items: start;
+    }
+    .about-stat-col { display: flex; flex-direction: column; }
+    .big-stat {
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .big-stat:first-child { border-top: 1px solid var(--border); }
+    .big-stat-num {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 3.25rem; font-weight: 900; line-height: 1;
+      color: var(--accent); display: block;
+    }
+    .big-stat-label { font-size: 0.68rem; color: var(--muted); margin-top: 0.3rem; display: block; }
+
+    .about-body p {
+      font-family: 'EB Garamond', serif;
+      font-size: 1rem; line-height: 1.8;
+      color: rgba(255,255,255,0.7); margin-bottom: 1.1rem;
+    }
+    .about-body p strong { color: white; font-family: 'EB Garamond', serif; }
+    .about-body p em { color: var(--accent); font-style: italic; }
+    .privacy-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border: 1px solid var(--aborder);
+      background: rgba(56,189,248,0.05);
+      border-radius: 2px; padding: 0.5rem 0.9rem;
+      font-size: 0.68rem; color: var(--accent2); margin-top: 0.75rem;
+    }
+    .privacy-badge::before { content: '🔒'; font-size: 0.8rem; }
+
+    /* ══ FEATURES ══════════════════════════════════════════════ */
+    #features { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .features-list { display: flex; flex-direction: column; }
+    .feature-row {
+      display: grid; grid-template-columns: 60px 1fr 1fr;
+      gap: 2rem; padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+      transition: background 0.15s;
+    }
+    .feature-row:first-child { border-top: 1px solid var(--border); }
+    .feature-row:hover { background: rgba(56,189,248,0.03); }
+    .feature-num-big {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 2.5rem; font-weight: 900;
+      color: rgba(56,189,248,0.12); line-height: 1;
+      text-align: right;
+    }
+    .feature-name {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+      color: white; display: flex; align-items: center; gap: 0.6rem;
+    }
+    .feature-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.65; }
+    .feature-tag {
+      display: inline-block; margin-top: 0.5rem;
+      font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); border: 1px solid var(--aborder);
+      padding: 2px 6px; border-radius: 2px;
+    }
+    .formats-grid { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.5rem; }
+    .fmt {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 2px; padding: 1px 6px;
+      font-size: 0.58rem; color: rgba(255,255,255,0.45);
+    }
+
+    /* ══ DEMO ══════════════════════════════════════════════════ */
+    #demo { background: var(--ink); border-bottom: 1px solid var(--border); }
+    .docket {
+      position: relative; margin-top: 2.5rem;
+      padding-left: 1.75rem;
+      border-left: 2px solid var(--border);
+    }
+    .docket-entry { position: relative; margin-bottom: 3.5rem; }
+    .docket-entry::before {
+      content: '';
+      position: absolute; left: -2.2rem; top: 0.35rem;
+      width: 9px; height: 9px;
+      background: var(--accent); border-radius: 1px;
+      transform: rotate(45deg);
+    }
+    .docket-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.6rem; }
+    .docket-step { font-size: 0.58rem; color: var(--accent); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+    .docket-date { font-size: 0.58rem; color: rgba(255,255,255,0.22); }
+    .docket-title { font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.15rem; margin-bottom: 0.4rem; }
+    .docket-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.7; max-width: 480px; margin-bottom: 1.25rem; }
+
+    .demo-ui {
+      border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+      background: var(--panel); max-width: 620px;
+    }
+    .demo-ui-bar {
+      background: #040810; padding: 6px 10px;
+      display: flex; align-items: center; gap: 5px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dui-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dui-dot.r{background:#ef4444} .dui-dot.y{background:#f59e0b} .dui-dot.g{background:#22c55e}
+    .dui-title { flex:1; text-align:center; font-size:0.58rem; color:rgba(255,255,255,0.22); }
+
+    .drop-demo {
+      margin: 1rem; border: 1px dashed var(--aborder);
+      border-radius: 3px; padding: 1.25rem;
+      background: rgba(56,189,248,0.03); text-align: center;
+    }
+    .drop-icon { font-size: 1.5rem; margin-bottom: 0.4rem; }
+    .drop-label { font-size: 0.7rem; color: var(--accent2); font-weight: 600; margin-bottom: 0.2rem; }
+    .drop-sub { font-size: 0.6rem; color: var(--muted); }
+    .drop-chips { display:flex; flex-wrap:wrap; gap:0.35rem; justify-content:center; margin-top:0.6rem; }
+    .chip { background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); border-radius:2px; padding:2px 7px; font-size:0.58rem; color:rgba(255,255,255,0.62); }
+
+    .etab { width: 100%; }
+    .etab-hdr, .etab-row { display:grid; grid-template-columns:58px 1fr 88px; padding:6px 12px; font-size:0.65rem; }
+    .etab-hdr { background:rgba(255,255,255,0.03); font-size:0.52rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.07em; border-bottom:1px solid var(--border); }
+    .etab-row { border-bottom:1px solid rgba(255,255,255,0.04); }
+    .etab-row.hi { background:rgba(56,189,248,0.07); }
+    .etab-lbl { color:var(--accent2); font-weight:600; }
+    .etab-desc { color:rgba(255,255,255,0.7); }
+    .etab-date { color:var(--muted); font-size:0.58rem; }
+
+    .cite-split { display:grid; grid-template-columns:1fr 1fr; min-height:220px; }
+    .cite-app { padding:0.9rem; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:0.65rem; }
+    .cite-app-lbl { font-size:0.52rem; color:var(--accent); text-transform:uppercase; letter-spacing:0.1em; font-weight:600; }
+    .cite-exhibit { background:rgba(56,189,248,0.08); border:1px solid var(--aborder); border-radius:3px; padding:0.55rem; }
+    .cite-exhibit-lbl { color:var(--accent2); font-weight:700; font-size:0.78rem; }
+    .cite-exhibit-desc { font-size:0.62rem; color:var(--muted); margin-top:2px; }
+    .cite-tmpl { font-size:0.55rem; color:rgba(255,255,255,0.28); }
+    .cite-tmpl code { color:var(--blue3); }
+    .cite-result { font-size:0.58rem; color:rgba(255,255,255,0.28); }
+    .cite-result span { color:var(--blue3); }
+    .cite-exec { margin-top:auto; background:var(--blue); color:white; border:none; border-radius:2px; padding:0.5rem; font-size:0.65rem; font-weight:700; font-family:'IBM Plex Mono',monospace; cursor:default; text-align:center; }
+
+    .word-doc-panel { background:#f0ede7; display:flex; flex-direction:column; }
+    .word-hdr { background:#2b579a; padding:5px 10px; font-size:0.58rem; color:white; font-weight:700; }
+    .word-body { flex:1; background:white; margin:5px; border-radius:1px; padding:9px; overflow:hidden; }
+    .wline { height:4px; background:#e5e7eb; border-radius:2px; margin-bottom:5px; }
+    .wline.s{width:45%} .wline.m{width:70%} .wline.l{width:88%}
+    .wcite { display:inline-block; background:#dbeafe; border:1px solid #93c5fd; border-radius:1px; padding:1px 4px; font-size:0.52rem; color:#1d4ed8; font-weight:600; animation:citepop 0.4s ease-out; }
+    @keyframes citepop { from{opacity:0;transform:translateY(3px)} to{opacity:1;transform:none} }
+    .wcite-line { display:flex; align-items:center; gap:3px; margin-bottom:5px; flex-wrap:wrap; }
+    .wi { height:4px; background:#e5e7eb; border-radius:2px; }
+
+    .refresh-list { padding:0.9rem 1rem; display:flex; flex-direction:column; gap:0; }
+    .ritem { display:flex; align-items:center; gap:0.6rem; padding:7px 0; border-bottom:1px solid rgba(255,255,255,0.04); font-size:0.65rem; }
+    .ritem:last-of-type { border:none; }
+    .rtag { font-family:'IBM Plex Mono',monospace; color:var(--accent2); font-size:0.6rem; flex-shrink:0; }
+    .rtext { flex:1; color:rgba(255,255,255,0.58); }
+    .rbadge { font-size:0.54rem; padding:2px 6px; border-radius:2px; font-weight:600; white-space:nowrap; }
+    .rb-ok { background:rgba(16,185,129,0.15); color:#6ee7b7; border:1px solid rgba(16,185,129,0.25); }
+    .rb-warn { background:rgba(56,189,248,0.12); color:var(--accent2); border:1px solid var(--aborder); }
+    .rsummary { margin-top:0.65rem; padding:0.65rem; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); border-radius:2px; font-size:0.62rem; color:#6ee7b7; font-weight:600; }
+
+    .export-wrap { padding:1.1rem; }
+    .export-title { font-size:0.65rem; color:rgba(255,255,255,0.68); margin-bottom:0.65rem; }
+    .export-files { display:flex; flex-direction:column; gap:0.2rem; margin-bottom:0.65rem; }
+    .efile { display:flex; align-items:center; gap:0.45rem; font-size:0.62rem; color:rgba(255,255,255,0.48); }
+    .export-btn { width:100%; background:var(--accent); color:var(--ink); border:none; border-radius:2px; padding:0.55rem; font-size:0.7rem; font-weight:700; cursor:default; font-family:'IBM Plex Mono',monospace; text-align:center; }
+
+    /* ══ REQUIREMENTS ══════════════════════════════════════════ */
+    #requirements { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .req-two-col { display:grid; grid-template-columns:240px 1fr; gap:4rem; align-items:start; }
+    .req-aside { position:sticky; top:4rem; }
+    .req-table { width:100%; border-collapse:collapse; }
+    .req-table td { padding:0.8rem 0.9rem; border-bottom:1px solid var(--border); font-size:0.76rem; vertical-align:top; }
+    .req-table td:first-child { color:var(--accent); font-weight:600; width:130px; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; }
+    .req-table td:last-child { color:rgba(255,255,255,0.62); }
+    .req-note-block { margin-top:1.5rem; padding:0.9rem 1.1rem; border-left:3px solid var(--accent); background:rgba(56,189,248,0.04); font-size:0.76rem; color:rgba(255,255,255,0.62); line-height:1.65; }
+    .req-note-block strong { color:var(--accent); display:block; margin-bottom:0.2rem; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em; }
+
+    /* ══ DOWNLOAD ══════════════════════════════════════════════ */
+    #download { background: var(--ink); }
+    .dl-grid { display:grid; grid-template-columns:1fr 1fr; gap:3.5rem; align-items:start; }
+    .dl-card { border:1px solid var(--aborder); border-radius:4px; overflow:hidden; position:relative; }
+    .px-corner { position:absolute; width:4px; height:4px; background:var(--accent); opacity:0.5; }
+    .px-corner.tl { top:0;left:0; box-shadow:8px 0 0 var(--accent),0 8px 0 var(--accent); }
+    .px-corner.br { bottom:0;right:0; box-shadow:-8px 0 0 var(--accent),0 -8px 0 var(--accent); }
+    .dl-card-header { background:rgba(56,189,248,0.07); border-bottom:1px solid var(--aborder); padding:1.4rem 1.75rem; display:flex; align-items:center; gap:1.25rem; }
+    .dl-version-tag { font-family:'Exo 2',sans-serif; font-weight:900; font-size:2.2rem; color:var(--accent); line-height:1; }
+    .dl-version-tag small { display:block; font-size:0.6rem; color:var(--muted); font-family:'IBM Plex Mono',monospace; margin-top:0.2rem; font-weight:400; }
+    .dl-meta { display:flex; flex-direction:column; gap:0.18rem; }
+    .dl-meta-line { font-size:0.68rem; color:var(--muted); }
+    .dl-meta-line strong { color:white; }
+    .dl-card-body { padding:1.4rem 1.75rem; }
+    .dl-btn { display:flex; align-items:center; justify-content:center; gap:0.5rem; background:var(--accent); color:var(--ink); font-weight:700; font-size:0.8rem; padding:0.9rem; border-radius:3px; text-decoration:none; width:100%; font-family:'IBM Plex Mono',monospace; letter-spacing:0.03em; margin-bottom:1rem; transition:background 0.15s; }
+    .dl-btn:hover { background:var(--accent2); }
+    .dl-meta-tags { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .dl-tag { font-size:0.6rem; padding:2px 7px; border:1px solid var(--border); border-radius:2px; color:rgba(255,255,255,0.35); }
+
+    .install-ol { list-style:none; counter-reset:inst; display:flex; flex-direction:column; gap:1rem; }
+    .install-ol li { counter-increment:inst; display:flex; gap:0.9rem; align-items:flex-start; }
+    .install-ol li::before { content:counter(inst,decimal-leading-zero); font-size:0.68rem; font-weight:700; color:var(--accent); flex-shrink:0; margin-top:0.1rem; width:22px; }
+    .install-ol li span { font-size:0.78rem; color:rgba(255,255,255,0.62); line-height:1.65; }
+    .install-ol li span strong { color:white; }
+    .install-ol li span code { background:rgba(255,255,255,0.06); padding:1px 5px; border-radius:2px; color:var(--blue3); font-size:0.74rem; }
+    .libre-note { margin-top:1.5rem; border-left:3px solid var(--accent); padding:0.85rem 1rem; background:rgba(56,189,248,0.04); font-size:0.76rem; color:rgba(255,255,255,0.58); line-height:1.65; }
+    .libre-note strong { color:var(--accent); }
+
+    /* ══ FOOTER ════════════════════════════════════════════════ */
+    footer {
+      background: #03050a; border-top: 1px solid var(--border);
+      padding: 2.5rem 0;
+    }
+    .footer-inner {
+      max-width: 1060px; margin: 0 auto; padding: 0 2.5rem;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: end;
+    }
+    .footer-logo { font-family:'Exo 2',sans-serif; font-weight:900; font-size:1.75rem; letter-spacing:-0.02em; line-height:1; }
+    .footer-logo span { color:var(--blue3); }
+    .footer-byline-txt { display:block; margin-top:0.35rem; font-size:0.65rem; color:var(--muted); }
+    .footer-copy { font-size:0.6rem; color:rgba(255,255,255,0.18); line-height:1.6; margin-top:0.75rem; }
+    .footer-links { display:flex; gap:0.9rem; flex-wrap:wrap; justify-content:flex-end; align-items:center; margin-bottom:0.5rem; }
+    .footer-links a { color:rgba(255,255,255,0.28); font-size:0.68rem; text-decoration:none; }
+    .footer-links a:hover { color:var(--accent); }
+
+    /* ══ ANIMATED ELEMENTS ═════════════════════════════════════ */
+    .px-cursor { display:inline-block; width:7px; height:12px; background:var(--accent); animation:blink 1s step-end infinite; vertical-align:middle; margin-left:2px; }
+    @keyframes blink { 50%{opacity:0} }
+
+    .dot-trail { display:flex; gap:4px; align-items:center; }
+    .dot-trail span { display:inline-block; width:4px; height:4px; background:var(--accent); border-radius:1px; animation:dtpulse 1.6s ease-in-out infinite; }
+    .dot-trail span:nth-child(2){animation-delay:0.2s} .dot-trail span:nth-child(3){animation-delay:0.4s} .dot-trail span:nth-child(4){animation-delay:0.6s} .dot-trail span:nth-child(5){animation-delay:0.8s}
+    @keyframes dtpulse { 0%,100%{opacity:0.2;transform:scale(1)} 50%{opacity:1;transform:scale(1.5)} }
+
+    /* ══ RESPONSIVE ════════════════════════════════════════════ */
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .hero-left { padding: 4rem 2.5rem 3rem; }
+      .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .dl-grid { grid-template-columns: 1fr; }
+      .req-two-col { grid-template-columns: 1fr; }
+      .req-aside { position: static; }
+      .cite-split { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      nav ul { display: none; }
+      .feature-row { grid-template-columns: 1fr; gap: 0.4rem; }
+      .feature-num-big { display: none; }
+      .wrap { padding: 0 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ TOP NAV ══════════════════════════════════════════════════ -->
+<nav>
+  <a href="#" class="nav-logo">Exhi<span>Bytes</span></a>
+  <ul>
+    <li><a href="#about"><span class="nav-num">01/</span> About</a></li>
+    <li><a href="#features"><span class="nav-num">02/</span> Features</a></li>
+    <li><a href="#demo"><span class="nav-num">03/</span> Demo</a></li>
+    <li><a href="#requirements"><span class="nav-num">04/</span> Requirements</a></li>
+    <li><a href="#download"><span class="nav-num">05/</span> Download</a></li>
+  </ul>
+  <a href="#download" class="nav-dl">⬇ DOWNLOAD</a>
+</nav>
+
+
+<!-- ══ HERO ════════════════════════════════════════════════════ -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-kicker">Legal Exhibit Management · Desktop App</div>
+    <h1 class="hero-title">Exhi<span>Bytes</span></h1>
+    <p class="hero-byline-text">Built by Tan Sze Yao<span class="px-cursor"></span></p>
+    <div class="hero-rule"></div>
+    <p class="hero-tagline">
+      The Word-integrated desktop tool that allows you to <strong>manage, cite and export</strong>
+      your exhibits with minimal fuss. New piece of evidence coming in late?
+      <strong>Refresh citations with just one click.</strong>
+    </p>
+    <div class="hero-btns">
+      <a href="#download" class="btn-accent">⬇ DOWNLOAD v1.0.0</a>
+      <a href="#demo" class="btn-ghost">▶ SEE HOW IT WORKS</a>
+    </div>
+  </div>
+
+  <!-- Hero right: live app mockup -->
+  <div class="hero-right">
+    <div class="app-mockup">
+      <div class="mockup-bar">
+        <div class="md r"></div><div class="md y"></div><div class="md g"></div>
+        <div class="mockup-title-txt">ExhiBytes — Tan Zai Leng vs Zachary Wong Choon Kiat</div>
+      </div>
+      <div class="mockup-body">
+        <!-- Sidebar -->
+        <div class="m-sidebar">
+          <div class="m-sb-brand">
+            <div class="m-sb-logo">Exhi<span>Bytes</span></div>
+            <div class="m-sb-by">Built by Tan Sze Yao</div>
+          </div>
+          <div class="m-sb-row">
+            <div class="m-sb-lbl">Project</div>
+            <div class="m-sb-val">Tan Zai Leng vs Zachary Wong Choon Kiat</div>
+          </div>
+          <div class="m-sb-row">
+            <div class="m-sb-lbl">Prefix</div>
+            <div class="m-sb-val lbl">P-N</div>
+          </div>
+          <div class="m-sb-row">
+            <div class="m-sb-lbl">Exhibits</div>
+            <div class="m-sb-count">4</div>
+          </div>
+          <div class="m-sb-row" style="flex:1">
+            <div class="m-sb-lbl" style="margin-bottom:4px">Notes — <span style="color:var(--blue3);font-family:monospace">P-3</span></div>
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:2px;padding:4px 6px;font-size:0.5rem;color:rgba(255,255,255,0.4);height:52px">Expert cross-examined 5 Mar 2024. Check para 42…</div>
+          </div>
+        </div>
+
+        <!-- Main + preview -->
+        <div class="m-main">
+          <div class="m-toolbar">
+            <div class="m-btn">← Back</div>
+            <div class="m-btn">+ Add</div>
+            <div class="m-btn blue">📌 Cite</div>
+            <div class="m-btn">↻ Refresh</div>
+            <div style="flex:1"></div>
+            <div class="m-btn">⚙</div>
+          </div>
+          <div class="m-th"><div>Label</div><div>Description</div><div>Date</div></div>
+          <div class="m-tr"><div class="m-lbl">P-1</div><div class="m-desc">Statement of Claim</div><div class="m-date">12 Jan 2024</div></div>
+          <div class="m-tr"><div class="m-lbl">P-2</div><div class="m-desc">Witness Statement</div><div class="m-date">3 Mar 2024</div></div>
+          <div class="m-tr sel"><div class="m-lbl">P-3</div><div class="m-desc">Expert Report</div><div class="m-date">15 Feb 2024</div></div>
+          <div class="m-tr"><div class="m-lbl">P-4</div><div class="m-desc">Emails Bundle</div><div class="m-date">—</div></div>
+        </div>
+
+        <!-- Preview -->
+        <div class="m-preview">
+          <div class="m-prev-hdr">
+            <div>
+              <div class="m-prev-tag">Preview</div>
+              <div class="m-prev-lbl">P-3</div>
+            </div>
+            <span style="color:#9ca3af;font-size:0.8rem">×</span>
+          </div>
+          <div class="m-prev-body">
+            <div class="m-page">
+              <div class="m-page-inner">
+                <div class="m-line s" style="background:#1d4ed8;opacity:0.5"></div>
+                <div class="m-line m"></div>
+                <div class="m-line"></div>
+                <div class="m-line s"></div>
+                <div class="m-line m h"></div>
+                <div class="m-line"></div>
+              </div>
+            </div>
+            <div class="m-page">
+              <div class="m-page-inner">
+                <div class="m-line m"></div>
+                <div class="m-line"></div>
+                <div class="m-line s"></div>
+                <div class="m-line m h"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ ABOUT ═══════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">01 — What is ExhiBytes</div>
+    </div>
+    <div class="about-grid">
+      <div class="about-stat-col">
+        <div class="big-stat"><span class="big-stat-num">16</span><span class="big-stat-label">file formats accepted</span></div>
+        <div class="big-stat"><span class="big-stat-num">1×</span><span class="big-stat-label">click to refresh all Word citations</span></div>
+        <div class="big-stat"><span class="big-stat-num">∞</span><span class="big-stat-label">exhibits per project</span></div>
+        <div class="big-stat"><span class="big-stat-num">0</span><span class="big-stat-label">cloud uploads — fully offline</span></div>
+      </div>
+      <div class="about-body">
+        <h2 class="big-heading">Your exhibit bundle,<br>under control.</h2>
+        <p>
+          ExhiBytes is a <strong>Windows desktop application</strong> built for lawyers,
+          litigators, and legal professionals who deal with exhibit bundles. Whether you are
+          preparing for trial, an arbitration, or a transactional filing, ExhiBytes handles
+          the tedious parts.
+        </p>
+        <p>
+          Drop in your documents — PDFs, Word files, Excel sheets, emails, images, and more —
+          and ExhiBytes <strong>automatically converts, numbers, and organises</strong> them
+          into a sequentially labelled exhibit list. Change the order and the labels update
+          <em>instantly</em>.
+        </p>
+        <p>
+          The core feature is <strong>Word integration</strong>: insert live citation controls
+          directly into your submissions, then refresh them all at once whenever your exhibit
+          list changes. No more hunting through a hundred-page document by hand.
+        </p>
+        <div class="privacy-badge">100% offline — your documents never leave your machine</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FEATURES ════════════════════════════════════════════════ -->
+<section id="features">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">02 — Features</div>
+    </div>
+    <h2 class="big-heading">Fully featured,<br>yet lightweight.</h2>
+    <p class="garamond-sub">Purpose-built for legal work. No subscription, no cloud, no bloat.</p>
+
+    <div class="features-list">
+      <div class="feature-row">
+        <div class="feature-num-big">01</div>
+        <div class="feature-name">📁 Drag-and-Drop Upload</div>
+        <div>
+          <div class="feature-desc">Drop any combination of files and ExhiBytes converts them to PDF automatically. Supports 16 file formats.</div>
+          <div class="formats-grid">
+            <span class="fmt">pdf</span><span class="fmt">docx</span><span class="fmt">doc</span><span class="fmt">xlsx</span><span class="fmt">xls</span><span class="fmt">pptx</span><span class="fmt">ppt</span><span class="fmt">odt</span><span class="fmt">ods</span><span class="fmt">odp</span><span class="fmt">rtf</span><span class="fmt">txt</span><span class="fmt">png</span><span class="fmt">jpg</span><span class="fmt">jpeg</span><span class="fmt">eml</span>
+          </div>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">02</div>
+        <div class="feature-name">🏷️ Auto-Numbering</div>
+        <div>
+          <div class="feature-desc">Configure your prefix and separator. Exhibits are labelled P-1, P-2, P-3 and so on. Reorder a row and every label updates automatically.</div>
+          <span class="feature-tag">Instant relabelling</span>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">03</div>
+        <div class="feature-name">📌 Word Citation Controls</div>
+        <div>
+          <div class="feature-desc">Place your cursor in Word, select an exhibit, click Cite. A tagged content control is inserted at your cursor — linked back to the exhibit.</div>
+          <span class="feature-tag">Body · Footnotes · Headers</span>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">04</div>
+        <div class="feature-name">↻ One-Click Citation Refresh</div>
+        <div>
+          <div class="feature-desc">Reordered your exhibits? Hit Refresh Citations — every content control in your Word document is updated to the new labels simultaneously.</div>
+          <span class="feature-tag">No manual hunting</span>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">05</div>
+        <div class="feature-name">🖼️ In-App PDF Preview</div>
+        <div>
+          <div class="feature-desc">Click any exhibit to see a multi-page PDF preview in the right-hand panel. No need to open a separate viewer.</div>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">06</div>
+        <div class="feature-name">📦 Export Bundle</div>
+        <div>
+          <div class="feature-desc">Export the entire exhibit bundle as a ZIP file containing individually numbered PDFs, ready to attach to court submissions.</div>
+          <span class="feature-tag">Court-ready output</span>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">07</div>
+        <div class="feature-name">📝 Per-Exhibit Notes</div>
+        <div>
+          <div class="feature-desc">Keep private notes on any exhibit — provenance, cross-examination remarks, to-dos. Notes are stored locally and never leave your machine.</div>
+        </div>
+      </div>
+      <div class="feature-row">
+        <div class="feature-num-big">08</div>
+        <div class="feature-name">🗃️ Multiple Projects</div>
+        <div>
+          <div class="feature-desc">Organise work into separate projects — one per matter, per client, or per filing. Switch between them instantly from the landing screen.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ DEMO ═════════════════════════════════════════════════════ -->
+<section id="demo">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">03 — How it works</div>
+    </div>
+    <h2 class="big-heading">From files to bundle<br>in minutes.</h2>
+    <p class="garamond-sub">A docket of the ExhiBytes workflow, from first upload to court-ready export.</p>
+
+    <div class="docket">
+
+      <div class="docket-entry">
+        <div class="docket-meta"><div class="docket-step">STEP 01</div><div class="docket-date">// UPLOAD</div></div>
+        <div class="docket-title">Drop your documents in</div>
+        <p class="docket-desc">Drag any mix of PDFs, Office files, images, and emails into the drop zone. ExhiBytes queues and converts each file, assigning sequential exhibit labels in real time.</p>
+        <div class="demo-ui">
+          <div class="demo-ui-bar"><div class="dui-dot r"></div><div class="dui-dot y"></div><div class="dui-dot g"></div><div class="dui-title">ExhiBytes — Tan Zai Leng vs Zachary Wong Choon Kiat</div></div>
+          <div class="drop-demo">
+            <div class="drop-icon">⬇</div>
+            <div class="drop-label">Drop files here to add exhibits</div>
+            <div class="drop-sub">PDF · DOCX · XLSX · PPTX · EML · PNG · TXT · ODT and more</div>
+            <div class="drop-chips">
+              <span class="chip">📄 Witness_Statement.docx</span>
+              <span class="chip">📑 Expert_Report.pdf</span>
+              <span class="chip">📧 Emails_Bundle.eml</span>
+              <span class="chip">📄 Board_Minutes.docx</span>
+            </div>
+            <div style="margin-top:0.85rem;width:100%">
+              <div style="font-size:0.58rem;color:var(--accent);opacity:0.7;margin-bottom:4px">Converting Witness_Statement.docx…</div>
+              <div style="background:rgba(255,255,255,0.06);border-radius:2px;height:3px;overflow:hidden">
+                <div style="height:100%;background:linear-gradient(90deg,var(--blue),var(--accent));border-radius:2px;animation:prog 2.5s ease-in-out infinite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <style>@keyframes prog{0%{width:10%}60%{width:88%}100%{width:10%}}</style>
+      </div>
+
+      <div class="docket-entry">
+        <div class="docket-meta"><div class="docket-step">STEP 02</div><div class="docket-date">// ORGANISE</div></div>
+        <div class="docket-title">Arrange and annotate</div>
+        <p class="docket-desc">Drag rows to reorder — exhibit labels update automatically. Add descriptions, dates, and private notes. Click any row to open a full PDF preview.</p>
+        <div class="demo-ui">
+          <div class="demo-ui-bar"><div class="dui-dot r"></div><div class="dui-dot y"></div><div class="dui-dot g"></div><div class="dui-title">Exhibit List</div></div>
+          <table class="etab">
+            <tr class="etab-hdr"><td>Label</td><td>Description</td><td>Date</td></tr>
+            <tr class="etab-row"><td class="etab-lbl">P-1</td><td class="etab-desc">Statement of Claim</td><td class="etab-date">12 Jan 2024</td></tr>
+            <tr class="etab-row"><td class="etab-lbl">P-2</td><td class="etab-desc">Witness Statement of Piplup</td><td class="etab-date">3 Mar 2024</td></tr>
+            <tr class="etab-row hi"><td class="etab-lbl">P-3</td><td class="etab-desc">Expert Report (Prof. Torterra)</td><td class="etab-date">15 Feb 2024</td></tr>
+            <tr class="etab-row"><td class="etab-lbl">P-4</td><td class="etab-desc">Email Correspondence Bundle</td><td class="etab-date">—</td></tr>
+          </table>
+          <div style="padding:7px 12px;font-size:0.55rem;color:rgba(255,255,255,0.18);border-top:1px solid var(--border)">drag to reorder · right-click for options · click row to preview</div>
+        </div>
+      </div>
+
+      <div class="docket-entry">
+        <div class="docket-meta"><div class="docket-step">STEP 03</div><div class="docket-date">// CITE IN WORD</div></div>
+        <div class="docket-title">Insert live citations into Word</div>
+        <p class="docket-desc">Place your cursor anywhere in Word — body text, footnotes, headers. Select an exhibit and hit <strong style="color:white">Cite</strong>. A tagged content control appears at your cursor.</p>
+        <div class="demo-ui">
+          <div class="demo-ui-bar"><div class="dui-dot r"></div><div class="dui-dot y"></div><div class="dui-dot g"></div><div class="dui-title">Cite in Word — Piplup_Submissions.docx</div></div>
+          <div class="cite-split">
+            <div class="cite-app">
+              <div class="cite-app-lbl">ExhiBytes</div>
+              <div class="cite-exhibit"><div class="cite-exhibit-lbl">P-3 ✓</div><div class="cite-exhibit-desc">Expert Report (Prof. Torterra)</div></div>
+              <div class="cite-tmpl">Template: <code>Exhibit {label}, {description}, {date}</code></div>
+              <div class="cite-result">Inserts: <span>Exhibit P-3, Expert Report (Prof. Torterra), 15 Feb 2024</span></div>
+              <div class="cite-exec">📌 CITE IN WORD</div>
+            </div>
+            <div class="word-doc-panel">
+              <div class="word-hdr">W  Piplup_Submissions.docx</div>
+              <div class="word-body">
+                <div class="wline l"></div><div class="wline m"></div>
+                <div class="wcite-line"><div class="wi" style="width:22%;height:4px"></div><span class="wcite">Exhibit P-1, Statement of Claim, 12 Jan 2024</span></div>
+                <div class="wline l"></div><div class="wline s"></div>
+                <div class="wcite-line"><div class="wi" style="width:15%;height:4px"></div><span class="wcite" style="animation-delay:1.2s">Exhibit P-3, Expert Report (Prof. Torterra), 15 Feb 2024</span></div>
+                <div class="wline m"></div>
+                <div style="display:inline-block;width:2px;height:12px;background:#1d4ed8;animation:blink 1s step-end infinite"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="docket-entry">
+        <div class="docket-meta"><div class="docket-step">STEP 04</div><div class="docket-date">// REFRESH</div></div>
+        <div class="docket-title">Refresh all citations at once</div>
+        <p class="docket-desc">Reordered an exhibit? Added a new one at the front? Click <strong style="color:white">Refresh Citations</strong> and every content control in your document updates simultaneously.</p>
+        <div class="demo-ui">
+          <div class="demo-ui-bar"><div class="dui-dot r"></div><div class="dui-dot y"></div><div class="dui-dot g"></div><div class="dui-title">Refresh — Piplup_Submissions.docx</div></div>
+          <div class="refresh-list">
+            <div class="ritem"><span class="rtag">EXMGR…P1</span><span class="rtext">Exhibit P-1, Statement of Claim, 12 Jan 2024</span><span class="rbadge rb-ok">Updated</span></div>
+            <div class="ritem"><span class="rtag">EXMGR…P2</span><span class="rtext">Exhibit P-2, Witness Statement of Piplup, 3 Mar 2024</span><span class="rbadge rb-ok">Updated</span></div>
+            <div class="ritem"><span class="rtag">EXMGR…P3</span><span class="rtext">Exhibit P-3, Expert Report (Prof. Torterra), 15 Feb 2024</span><span class="rbadge rb-ok">Updated</span></div>
+            <div class="ritem"><span class="rtag">EXMGR…XX</span><span class="rtext" style="color:rgba(255,255,255,0.28);font-style:italic">Deleted exhibit — not found in project</span><span class="rbadge rb-warn">Orphaned</span></div>
+            <div class="rsummary">✓ Updated 3 citations · 1 orphaned · 4 controls in "Piplup_Submissions.docx"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="docket-entry">
+        <div class="docket-meta"><div class="docket-step">STEP 05</div><div class="docket-date">// EXPORT</div></div>
+        <div class="docket-title">Export the complete bundle</div>
+        <p class="docket-desc">Click <strong style="color:white">Export Bundle</strong> to generate a ZIP containing all exhibits as individually numbered PDFs — labelled, ordered, and court-ready.</p>
+        <div class="demo-ui">
+          <div class="demo-ui-bar"><div class="dui-dot r"></div><div class="dui-dot y"></div><div class="dui-dot g"></div><div class="dui-title">Export Bundle — Tan Zai Leng vs Zachary Wong Choon Kiat</div></div>
+          <div class="export-wrap">
+            <div class="export-title">Exporting <strong style="color:white">4 exhibits</strong> from <span style="color:var(--accent2)">Tan Zai Leng vs Zachary Wong Choon Kiat</span></div>
+            <div class="export-files">
+              <div class="efile"><span>📑</span> P-1 Statement of Claim.pdf</div>
+              <div class="efile"><span>📑</span> P-2 Witness Statement of Piplup.pdf</div>
+              <div class="efile"><span>📑</span> P-3 Expert Report (Prof. Torterra).pdf</div>
+              <div class="efile"><span>📑</span> P-4 Email Correspondence Bundle.pdf</div>
+              <div class="efile" style="color:rgba(255,255,255,0.2)"><span>🗜️</span> <em>Piplup_v_Empoleon_Bundle.zip</em></div>
+            </div>
+            <div class="export-btn">📦 EXPORT AS ZIP</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ REQUIREMENTS ════════════════════════════════════════════ -->
+<section id="requirements">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">04 — System Requirements</div>
+    </div>
+    <div class="req-two-col">
+      <div class="req-aside">
+        <h2 class="big-heading" style="font-size:1.85rem">What you need<br>to run it.</h2>
+        <p style="font-size:0.76rem;color:var(--muted);margin-top:0.9rem;line-height:1.7">
+          ExhiBytes is a lean desktop app. The only heavyweight dependency is
+          LibreOffice — and only if you need to convert Office files.
+        </p>
+        <svg width="72" height="72" viewBox="0 0 16 16" style="image-rendering:pixelated;opacity:0.5;margin-top:1.75rem">
+          <rect x="1" y="1" width="14" height="11" fill="#1e3a5f"/>
+          <rect x="2" y="2" width="12" height="9" fill="#06080e"/>
+          <rect x="10" y="5" width="1" height="1" fill="#38bdf8"/>
+          <rect x="9" y="6" width="1" height="1" fill="#38bdf8"/>
+          <rect x="5" y="7" width="1" height="1" fill="#38bdf8"/>
+          <rect x="6" y="8" width="1" height="1" fill="#38bdf8"/>
+          <rect x="7" y="7" width="1" height="1" fill="#38bdf8"/>
+          <rect x="8" y="6" width="1" height="1" fill="#38bdf8"/>
+          <rect x="6" y="12" width="4" height="1" fill="#1e3a5f"/>
+          <rect x="5" y="13" width="6" height="1" fill="#1e3a5f"/>
+        </svg>
+      </div>
+      <div>
+        <table class="req-table">
+          <tr><td>OS</td><td>Windows 10 (64-bit) or Windows 11. macOS and Linux are not supported in this release.</td></tr>
+          <tr><td>RAM</td><td>4 GB minimum. 8 GB recommended for smooth Office file conversion.</td></tr>
+          <tr><td>Disk</td><td>500 MB for the application, plus space for your exhibit files.</td></tr>
+          <tr><td>Display</td><td>1280 × 720 or higher.</td></tr>
+          <tr><td>LibreOffice</td><td>Version 7 or later. Required only for converting DOCX, XLSX, PPTX and other Office formats to PDF. The installer will offer to install this automatically.</td></tr>
+          <tr><td>MS Word</td><td>Required only for the citation feature. Office 2013 or later with COM automation support.</td></tr>
+          <tr><td>Internet</td><td>Not required after installation. ExhiBytes is fully offline.</td></tr>
+        </table>
+        <div class="req-note-block">
+          <strong>PDF-only users</strong>
+          If you only work with PDF files, LibreOffice is not required. It is only needed to convert Office format files. The app will display a warning if you add a non-PDF file without LibreOffice installed.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ DOWNLOAD ════════════════════════════════════════════════ -->
+<section id="download">
+  <div class="wrap">
+    <div class="section-eyebrow">
+      <div class="eyebrow-line"></div>
+      <div class="eyebrow-text">05 — Download &amp; Install</div>
+    </div>
+    <h2 class="big-heading" style="margin-bottom:2rem">Get ExhiBytes.</h2>
+    <div class="dl-grid">
+      <div class="dl-card">
+        <div class="px-corner tl"></div>
+        <div class="px-corner br"></div>
+        <div class="dl-card-header">
+          <div class="dl-version-tag">v1.0.0<small>ExhiBytes for Windows</small></div>
+          <div class="dl-meta">
+            <div class="dl-meta-line"><strong>Windows 10 / 11</strong> · 64-bit</div>
+            <div class="dl-meta-line"><strong>~820 MB</strong> · includes LibreOffice installer</div>
+            <div class="dl-meta-line"><strong>Offline</strong> · no internet post-install</div>
+          </div>
+        </div>
+        <div class="dl-card-body">
+          <a href="ExhiBytes-v1.0.0-Setup.zip" class="dl-btn" download>⬇ &nbsp;DOWNLOAD ExhiBytes-v1.0.0-Setup.zip</a>
+          <div class="dl-meta-tags">
+            <span class="dl-tag">Windows</span>
+            <span class="dl-tag">Electron</span>
+            <span class="dl-tag">Offline</span>
+            <span class="dl-tag">No subscription</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size:0.68rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1.25rem">Installation Instructions</h3>
+        <ol class="install-ol">
+          <li><span>Download the ZIP file using the button on the left and save it locally.</span></li>
+          <li><span><strong>Extract the ZIP file.</strong> Right-click and select <em>Extract All…</em></span></li>
+          <li><span><strong>Right-click <code>Install.bat</code></strong> and select <em>Run as administrator.</em> The installer checks for LibreOffice and offers to install it if missing.</span></li>
+          <li><span>Follow the prompts. ExhiBytes is copied to <code>C:\Program Files\ExhiBytes\</code> with Desktop and Start Menu shortcuts.</span></li>
+          <li><span>Launch ExhiBytes from the Desktop shortcut. No further configuration required.</span></li>
+        </ol>
+        <div class="libre-note">
+          <strong>⚠ LibreOffice — </strong>
+          Required to convert Office documents (DOCX, XLSX, PPTX) to PDF. The installer detects whether LibreOffice is present and will offer to run the bundled <code style="color:var(--accent2);font-size:0.74rem">LibreOffice_26.2.2_Win_x86-64.msi</code> if not. Skip if you only work with PDFs.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ══ FOOTER ══════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Exhi<span>Bytes</span></div>
+      <span class="footer-byline-txt">Built by Tan Sze Yao</span>
+      <div class="footer-copy">© 2024 ExhiBytes · All rights reserved<br>Local software — no data leaves your machine</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1rem">
+      <div class="footer-links">
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#demo">Demo</a>
+        <a href="#requirements">Requirements</a>
+        <a href="#download">Download</a>
+      </div>
+      <svg width="56" height="40" viewBox="0 0 15 11" style="image-rendering:pixelated;opacity:0.25">
+        <rect x="7" y="0" width="1" height="6" fill="#38bdf8"/>
+        <rect x="2" y="3" width="11" height="1" fill="#38bdf8"/>
+        <rect x="3" y="4" width="1" height="2" fill="#38bdf8"/>
+        <rect x="11" y="4" width="1" height="2" fill="#38bdf8"/>
+        <rect x="2" y="6" width="3" height="1" fill="#38bdf8"/>
+        <rect x="10" y="6" width="3" height="1" fill="#38bdf8"/>
+        <rect x="6" y="7" width="3" height="1" fill="#38bdf8"/>
+        <rect x="5" y="8" width="5" height="1" fill="#38bdf8"/>
+      </svg>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

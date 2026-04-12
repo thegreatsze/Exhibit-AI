@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExhiBytes — Legal Exhibit Bundle Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0f172a;
+      --dark:    #1a2332;
+      --darker:  #111827;
+      --blue:    #2563eb;
+      --blue2:   #3b82f6;
+      --blue3:   #60a5fa;
+      --blue4:   #93c5fd;
+      --teal:    #0ea5e9;
+      --white:   #ffffff;
+      --muted:   rgba(255,255,255,0.55);
+      --subtle:  rgba(255,255,255,0.12);
+      --border:  rgba(255,255,255,0.10);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(15,23,42,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 56px;
+    }
+    .nav-brand {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 900; font-size: 1.35rem;
+      letter-spacing: -0.01em; line-height: 1;
+      text-decoration: none; color: var(--white);
+    }
+    .nav-brand span { color: var(--blue3); }
+    nav ul { list-style: none; display: flex; gap: 0.25rem; }
+    nav ul a {
+      color: rgba(255,255,255,0.7); text-decoration: none;
+      font-size: 0.875rem; font-weight: 500;
+      padding: 0.4rem 0.75rem; border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+    nav ul a:hover { background: var(--subtle); color: var(--white); }
+    .nav-cta {
+      background: var(--blue); color: var(--white) !important;
+      padding: 0.4rem 1rem !important; border-radius: 6px !important;
+      font-weight: 600 !important; font-size: 0.85rem !important;
+    }
+    .nav-cta:hover { background: var(--blue2) !important; }
+
+    /* ── HERO ────────────────────────────────────────────────── */
+    .hero {
+      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #0f172a 0%, #1a2332 50%, #1e3a5f 100%);
+      padding: 6rem 2rem 5rem;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,99,235,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Pixel grid overlay */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 780px; }
+
+    .pixel-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(37,99,235,0.15); border: 1px solid rgba(96,165,250,0.3);
+      border-radius: 999px; padding: 0.3rem 0.9rem;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em;
+      color: var(--blue3); text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .pixel-badge::before { content: '⬛'; font-size: 0.6rem; }
+
+    .hero h1 {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 900; font-size: clamp(3.5rem, 8vw, 6rem);
+      letter-spacing: -0.02em; line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    .hero h1 span { color: var(--blue3); }
+    .hero-byline {
+      color: var(--muted); font-size: 0.85rem; font-weight: 600;
+      font-family: 'Exo 2', sans-serif; margin-bottom: 1.25rem;
+      letter-spacing: 0.01em;
+    }
+    .hero-tagline {
+      font-size: clamp(1.1rem, 3vw, 1.4rem); color: rgba(255,255,255,0.85);
+      font-weight: 400; max-width: 580px; margin: 0 auto 2.5rem;
+    }
+    .hero-tagline strong { color: var(--white); font-weight: 600; }
+
+    .hero-cta-row { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 4rem; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--blue); color: var(--white);
+      font-weight: 700; font-size: 1rem;
+      padding: 0.85rem 2rem; border-radius: 8px;
+      text-decoration: none; transition: background 0.15s, transform 0.1s;
+      border: none; cursor: pointer;
+    }
+    .btn-primary:hover { background: var(--blue2); transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: var(--white);
+      font-weight: 600; font-size: 1rem;
+      padding: 0.85rem 2rem; border-radius: 8px;
+      text-decoration: none; border: 1px solid rgba(255,255,255,0.25);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-secondary:hover { background: var(--subtle); border-color: rgba(255,255,255,0.4); }
+
+    /* ── APP MOCKUP ──────────────────────────────────────────── */
+    .app-mockup {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 900px; margin: 0 auto;
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(96,165,250,0.25);
+      box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+    }
+    .mockup-bar {
+      background: #0d1526; padding: 10px 14px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .mockup-dot {
+      width: 11px; height: 11px; border-radius: 50%;
+    }
+    .mockup-dot.r { background: #ef4444; }
+    .mockup-dot.y { background: #f59e0b; }
+    .mockup-dot.g { background: #22c55e; }
+    .mockup-title {
+      flex: 1; text-align: center; font-size: 0.72rem;
+      color: rgba(255,255,255,0.35); font-weight: 500;
+    }
+    .mockup-body {
+      background: #1a2332; display: flex;
+      min-height: 380px;
+    }
+    .mock-sidebar {
+      width: 180px; background: #151e2e; flex-shrink: 0;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: flex; flex-direction: column;
+    }
+    .mock-sidebar-brand {
+      padding: 14px 14px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg, #0f172a 0%, #1a2332 60%, #1e3a5f 100%);
+    }
+    .mock-brand-name {
+      font-family: 'Exo 2', sans-serif; font-weight: 900;
+      font-size: 1.1rem; letter-spacing: -0.01em;
+    }
+    .mock-brand-name span { color: var(--blue3); }
+    .mock-brand-sub {
+      font-size: 0.6rem; color: var(--muted); font-weight: 600;
+      font-family: 'Exo 2', sans-serif; margin-top: 2px;
+    }
+    .mock-sidebar-section {
+      padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .mock-section-label { font-size: 0.55rem; color: var(--blue3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+    .mock-section-val { font-size: 0.72rem; font-weight: 600; }
+    .mock-section-val.exhibit-label { color: var(--blue3); font-family: monospace; }
+    .mock-count { font-size: 1.4rem; font-weight: 700; }
+    .mock-main { flex: 1; display: flex; flex-direction: column; }
+    .mock-toolbar {
+      height: 42px; background: #1e2d45;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; gap: 6px; padding: 0 10px;
+    }
+    .mock-btn {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px; padding: 3px 8px; font-size: 0.58rem;
+      color: rgba(255,255,255,0.8); font-weight: 500; white-space: nowrap;
+    }
+    .mock-btn.blue { background: rgba(37,99,235,0.3); border-color: rgba(96,165,250,0.4); color: var(--blue3); }
+    .mock-table-header {
+      display: grid; grid-template-columns: 40px 70px 1fr 90px 70px;
+      padding: 6px 12px; background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.55rem; color: var(--muted); font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .mock-table-row {
+      display: grid; grid-template-columns: 40px 70px 1fr 90px 70px;
+      padding: 7px 12px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 0.65rem; align-items: center;
+      transition: background 0.1s;
+    }
+    .mock-table-row:hover { background: rgba(255,255,255,0.04); }
+    .mock-table-row.selected { background: rgba(37,99,235,0.15); }
+    .row-label { color: var(--blue3); font-weight: 700; font-family: monospace; font-size: 0.68rem; }
+    .row-desc { color: rgba(255,255,255,0.7); }
+    .row-date { color: var(--muted); font-size: 0.6rem; }
+    .row-pages { color: var(--muted); font-size: 0.6rem; }
+    .mock-check { width: 12px; height: 12px; border: 1px solid rgba(255,255,255,0.2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 8px; }
+    .mock-check.checked { background: var(--blue); border-color: var(--blue); }
+
+    /* Preview panel in mockup */
+    .mock-preview {
+      width: 220px; background: #fff; border-left: 1px solid rgba(255,255,255,0.08);
+      display: flex; flex-direction: column; flex-shrink: 0;
+    }
+    .mock-preview-header {
+      padding: 7px 10px; border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb; display: flex; align-items: center; justify-content: space-between;
+    }
+    .mock-preview-label { font-size: 0.58rem; color: #6b7280; text-transform: uppercase; font-weight: 600; letter-spacing: 0.06em; }
+    .mock-preview-exhibit { font-size: 0.68rem; color: var(--blue); font-weight: 700; font-family: monospace; }
+    .mock-preview-body { flex: 1; background: #f3f4f6; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .mock-page { background: white; border-radius: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+    .mock-page-inner { padding: 8px; }
+    .mock-page-line { height: 4px; background: #e5e7eb; border-radius: 2px; margin-bottom: 4px; }
+    .mock-page-line.short { width: 60%; }
+    .mock-page-line.med { width: 80%; }
+    .mock-page-line.blue-line { background: rgba(37,99,235,0.25); }
+
+    /* ── SECTIONS ────────────────────────────────────────────── */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue3); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 800; font-size: clamp(1.8rem, 4vw, 2.6rem);
+      letter-spacing: -0.02em; line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: rgba(255,255,255,0.65); font-size: 1.05rem;
+      max-width: 580px; line-height: 1.7;
+    }
+    .section-header { margin-bottom: 3.5rem; }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── INTRO STATS ─────────────────────────────────────────── */
+    #intro { background: var(--navy); }
+    .intro-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .intro-text p { color: rgba(255,255,255,0.7); margin-bottom: 1rem; font-size: 1.025rem; line-height: 1.75; }
+    .intro-text p strong { color: var(--white); }
+
+    .intro-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .stat-card {
+      background: var(--dark); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+      position: relative; overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+    }
+    .stat-num {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 2.2rem; font-weight: 900; color: var(--blue3);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── FEATURES ────────────────────────────────────────────── */
+    #features { background: var(--darker); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--dark); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.75rem;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .feature-card:hover { border-color: rgba(96,165,250,0.35); transform: translateY(-2px); }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(37,99,235,0.15); border: 1px solid rgba(96,165,250,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .feature-card h3 {
+      font-family: 'Exo 2', sans-serif; font-weight: 700;
+      font-size: 1rem; margin-bottom: 0.5rem;
+    }
+    .feature-card p { font-size: 0.875rem; color: rgba(255,255,255,0.62); line-height: 1.65; }
+
+    /* Pixel art decoration */
+    .pixel-doc {
+      display: inline-block;
+      width: 8px; height: 10px;
+      background: var(--blue3);
+      box-shadow:
+        4px 0 0 var(--blue3),
+        0 2px 0 var(--blue3),
+        4px 2px 0 var(--blue3),
+        0 4px 0 var(--blue3),
+        4px 4px 0 var(--blue3),
+        0 6px 0 rgba(96,165,250,0.4),
+        4px 6px 0 rgba(96,165,250,0.4),
+        2px 6px 0 rgba(96,165,250,0.4);
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* ── DEMO ────────────────────────────────────────────────── */
+    #demo { background: var(--navy); }
+
+    .demo-steps {
+      display: flex; flex-direction: column; gap: 5rem;
+    }
+    .demo-step {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3rem; align-items: center;
+    }
+    .demo-step.reverse { direction: rtl; }
+    .demo-step.reverse > * { direction: ltr; }
+
+    .step-number {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--blue3); margin-bottom: 0.5rem;
+    }
+    .step-title {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 800; font-size: 1.6rem;
+      letter-spacing: -0.01em; margin-bottom: 0.75rem;
+    }
+    .step-desc { color: rgba(255,255,255,0.65); font-size: 0.95rem; line-height: 1.75; }
+    .step-desc strong { color: var(--white); }
+
+    .step-bullets { list-style: none; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .step-bullets li {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      font-size: 0.875rem; color: rgba(255,255,255,0.7);
+    }
+    .step-bullets li::before {
+      content: '▸'; color: var(--blue3); flex-shrink: 0; margin-top: 0.05rem;
+    }
+
+    /* Demo UI panels */
+    .demo-panel {
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(96,165,250,0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      background: var(--dark);
+    }
+    .demo-panel-bar {
+      background: #0d1526; padding: 8px 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dp-dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dp-dot.r { background: #ef4444; } .dp-dot.y { background: #f59e0b; } .dp-dot.g { background: #22c55e; }
+    .demo-panel-title { flex:1; text-align: center; font-size: 0.65rem; color: rgba(255,255,255,0.3); }
+
+    /* Step 1: Drop zone */
+    .drop-zone-demo {
+      margin: 1.5rem; border: 2px dashed rgba(96,165,250,0.35);
+      border-radius: 10px; padding: 2rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+      background: rgba(37,99,235,0.06);
+    }
+    .drop-zone-icon { font-size: 2.5rem; }
+    .drop-zone-text { font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; }
+    .drop-zone-text strong { color: var(--blue3); display: block; margin-bottom: 0.25rem; font-size: 0.9rem; }
+    .file-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.5rem; }
+    .file-chip {
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px; padding: 0.25rem 0.6rem;
+      font-size: 0.65rem; color: rgba(255,255,255,0.75);
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .file-chip .chip-icon { font-size: 0.75rem; }
+    .progress-bar { width: 100%; background: rgba(255,255,255,0.08); border-radius: 4px; height: 4px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--teal)); border-radius: 4px; animation: prog 2.5s ease-in-out infinite; }
+    @keyframes prog { 0%{width:15%} 60%{width:92%} 100%{width:15%} }
+
+    /* Step 2: Table demo */
+    .exhibit-table-demo { overflow: hidden; }
+    .etd-header {
+      display: grid; grid-template-columns: 28px 60px 1fr 75px;
+      padding: 6px 12px; background: rgba(255,255,255,0.04);
+      font-size: 0.55rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+    }
+    .etd-row {
+      display: grid; grid-template-columns: 28px 60px 1fr 75px;
+      padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.72rem; align-items: center;
+    }
+    .etd-row.sel { background: rgba(37,99,235,0.12); }
+    .etd-row:hover:not(.sel) { background: rgba(255,255,255,0.03); }
+    .etd-label { color: var(--blue3); font-weight: 700; font-family: monospace; }
+    .etd-desc { color: rgba(255,255,255,0.75); }
+    .etd-date { color: var(--muted); font-size: 0.62rem; }
+
+    /* Step 3: Word integration demo */
+    .word-demo {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; height: 320px;
+    }
+    .word-app-side {
+      background: var(--dark); padding: 1rem;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      display: flex; flex-direction: column; gap: 0.75rem;
+    }
+    .word-side-label { font-size: 0.58rem; color: var(--blue3); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    .word-exhibit-sel {
+      background: rgba(37,99,235,0.15); border: 1px solid rgba(96,165,250,0.3);
+      border-radius: 6px; padding: 0.6rem 0.75rem;
+    }
+    .word-exhibit-sel .sel-label { font-family: monospace; color: var(--blue3); font-weight: 700; font-size: 0.85rem; }
+    .word-exhibit-sel .sel-desc { font-size: 0.68rem; color: rgba(255,255,255,0.6); margin-top: 2px; }
+    .cite-btn-demo {
+      background: var(--blue); color: white; border: none; border-radius: 6px;
+      padding: 0.6rem 1rem; font-size: 0.75rem; font-weight: 700;
+      cursor: default; display: flex; align-items: center; gap: 0.4rem;
+    }
+    .cite-btn-demo .dot-anim::after { content: '...'; animation: dots 1.5s infinite; }
+    @keyframes dots { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+    .cite-template { font-size: 0.62rem; color: var(--muted); margin-top: 0.5rem; }
+    .cite-template code { color: var(--blue4); font-family: monospace; font-size: 0.65rem; }
+
+    .word-doc-side {
+      background: #f0f0f0; display: flex; flex-direction: column;
+    }
+    .word-toolbar {
+      background: #2b579a; padding: 6px 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .word-toolbar-brand { color: white; font-size: 0.65rem; font-weight: 700; }
+    .word-doc-body { flex: 1; background: white; margin: 8px; border-radius: 2px; padding: 12px; overflow: hidden; }
+    .word-line { height: 5px; background: #e5e7eb; border-radius: 2px; margin-bottom: 6px; }
+    .word-line.short { width: 50%; }
+    .word-line.med { width: 75%; }
+    .word-line.long { width: 90%; }
+    .word-citation {
+      display: inline-block;
+      background: rgba(37,99,235,0.12); border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 2px; padding: 1px 5px;
+      font-size: 0.62rem; color: #1d4ed8; font-weight: 600;
+      animation: citePop 0.5s ease-out;
+    }
+    @keyframes citePop { from{opacity:0;transform:scale(0.9)} to{opacity:1;transform:scale(1)} }
+    .word-line-with-cite { display: flex; align-items: center; gap: 4px; margin-bottom: 6px; flex-wrap: wrap; }
+    .word-inline { height: 5px; background: #e5e7eb; border-radius: 2px; }
+
+    /* Step 4: Refresh */
+    .refresh-demo { padding: 1.25rem; }
+    .refresh-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .refresh-title { font-size: 0.72rem; color: rgba(255,255,255,0.8); font-weight: 600; }
+    .refresh-btn {
+      background: rgba(14,165,233,0.2); border: 1px solid rgba(14,165,233,0.4);
+      color: #38bdf8; border-radius: 4px; padding: 4px 10px;
+      font-size: 0.62rem; font-weight: 600; cursor: default;
+    }
+    .refresh-item {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.68rem;
+    }
+    .refresh-item:last-child { border-bottom: none; }
+    .refresh-tag { font-family: monospace; color: var(--blue3); font-size: 0.65rem; }
+    .refresh-text { color: rgba(255,255,255,0.65); flex: 1; }
+    .refresh-badge {
+      font-size: 0.58rem; padding: 2px 6px; border-radius: 3px; font-weight: 600;
+    }
+    .badge-updated { background: rgba(34,197,94,0.2); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+    .badge-orphaned { background: rgba(245,158,11,0.2); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+    .refresh-summary {
+      margin-top: 1rem; padding: 0.75rem;
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 6px; font-size: 0.68rem; color: #86efac; font-weight: 600;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+
+    /* Step 5: Export */
+    .export-demo { padding: 1.25rem; }
+    .export-options { display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem; }
+    .export-opt {
+      display: flex; align-items: center; gap: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px; font-size: 0.72rem;
+    }
+    .export-opt input[type=checkbox] { accent-color: var(--blue); width: 13px; height: 13px; }
+    .export-opt label { color: rgba(255,255,255,0.75); cursor: default; }
+    .export-opt .opt-badge { margin-left: auto; font-size: 0.58rem; color: var(--muted); }
+    .export-go {
+      width: 100%; background: var(--blue); border: none; border-radius: 6px;
+      padding: 0.65rem; color: white; font-weight: 700; font-size: 0.78rem;
+      cursor: default; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .export-files { margin-top: 0.75rem; }
+    .export-file-item {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.65rem; color: rgba(255,255,255,0.55);
+      padding: 3px 0;
+    }
+    .export-file-item .fi-icon { font-size: 0.8rem; }
+
+    /* ── SYSTEM REQUIREMENTS ─────────────────────────────────── */
+    #requirements { background: var(--darker); }
+    .req-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .req-card {
+      background: var(--dark); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem;
+    }
+    .req-icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .req-card h3 { font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 0.75rem; color: var(--blue3); }
+    .req-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+    .req-list li { font-size: 0.825rem; color: rgba(255,255,255,0.65); display: flex; align-items: flex-start; gap: 0.5rem; }
+    .req-list li::before { content: '▸'; color: var(--blue3); flex-shrink: 0; }
+    .req-note {
+      margin-top: 2rem; padding: 1rem 1.25rem;
+      background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 8px; font-size: 0.85rem; color: rgba(255,255,255,0.75);
+      display: flex; align-items: flex-start; gap: 0.75rem;
+    }
+    .req-note .req-note-icon { font-size: 1rem; flex-shrink: 0; margin-top: 0.05rem; }
+
+    /* ── DOWNLOAD ────────────────────────────────────────────── */
+    #download { background: var(--navy); }
+    .download-card {
+      background: linear-gradient(135deg, #1a2332 0%, #1e3a5f 100%);
+      border: 1px solid rgba(96,165,250,0.25);
+      border-radius: 16px; padding: 3rem;
+      position: relative; overflow: hidden;
+    }
+    .download-card::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(37,99,235,0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Pixel art zip icon */
+    .pixel-zip {
+      display: inline-block; width: 4px; height: 4px;
+      background: var(--blue3);
+      box-shadow:
+        4px 0px 0 var(--blue3), 8px 0px 0 var(--blue3), 12px 0px 0 var(--blue3),
+        0px 4px 0 var(--blue3), 8px 4px 0 var(--blue3),
+        4px 8px 0 var(--blue3), 8px 8px 0 var(--blue3), 12px 8px 0 var(--blue3),
+        0px 12px 0 var(--blue3), 8px 12px 0 var(--blue3),
+        4px 16px 0 var(--blue3), 8px 16px 0 var(--blue3), 12px 16px 0 var(--blue3),
+        0px 20px 0 rgba(147,197,253,0.6), 4px 20px 0 rgba(147,197,253,0.6),
+        8px 20px 0 rgba(147,197,253,0.6), 12px 20px 0 rgba(147,197,253,0.6);
+      margin-right: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .download-top { display: flex; align-items: flex-start; gap: 2rem; flex-wrap: wrap; }
+    .download-info { flex: 1; min-width: 260px; }
+    .download-info h2 {
+      font-family: 'Exo 2', sans-serif;
+      font-weight: 800; font-size: 1.9rem; letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .download-info p { color: rgba(255,255,255,0.65); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .download-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .dl-meta-item { font-size: 0.8rem; color: var(--muted); }
+    .dl-meta-item strong { color: var(--white); display: block; font-size: 0.95rem; }
+
+    .install-steps { margin-top: 2.5rem; }
+    .install-steps h3 {
+      font-family: 'Exo 2', sans-serif; font-weight: 700;
+      font-size: 1.1rem; margin-bottom: 1.25rem; color: var(--blue3);
+    }
+    .install-step-list { display: flex; flex-direction: column; gap: 1rem; }
+    .install-step {
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .install-step-num {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(37,99,235,0.2); border: 1px solid rgba(96,165,250,0.3);
+      color: var(--blue3); font-weight: 700; font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .install-step-text { font-size: 0.9rem; color: rgba(255,255,255,0.75); line-height: 1.6; }
+    .install-step-text strong { color: var(--white); }
+    .install-step-text code {
+      font-family: monospace; font-size: 0.82rem;
+      background: rgba(255,255,255,0.08); padding: 1px 5px; border-radius: 3px;
+      color: var(--blue4);
+    }
+
+    .libreoffice-note {
+      margin-top: 2rem; padding: 1rem 1.25rem;
+      background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.22);
+      border-radius: 8px;
+    }
+    .libreoffice-note h4 { font-size: 0.85rem; font-weight: 700; color: #fcd34d; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+    .libreoffice-note p { font-size: 0.82rem; color: rgba(255,255,255,0.65); line-height: 1.65; }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      background: #0d1526; border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      display: flex; flex-direction: column; align-items: center; gap: 1rem;
+    }
+    .footer-brand {
+      font-family: 'Exo 2', sans-serif; font-weight: 900;
+      font-size: 1.5rem; letter-spacing: -0.01em;
+    }
+    .footer-brand span { color: var(--blue3); }
+    .footer-byline { color: var(--muted); font-size: 0.85rem; font-weight: 500; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { color: rgba(255,255,255,0.4); font-size: 0.8rem; text-decoration: none; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-copy { color: rgba(255,255,255,0.2); font-size: 0.75rem; }
+
+    /* ── PIXEL ART DECORATIONS ───────────────────────────────── */
+    .pixel-corner-tl {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      width: 4px; height: 4px;
+      background: rgba(96,165,250,0.4);
+      box-shadow:
+        8px 0 0 rgba(96,165,250,0.3), 16px 0 0 rgba(96,165,250,0.2),
+        0 8px 0 rgba(96,165,250,0.3), 0 16px 0 rgba(96,165,250,0.2);
+    }
+    .pixel-corner-br {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      width: 4px; height: 4px;
+      background: rgba(96,165,250,0.4);
+      box-shadow:
+        -8px 0 0 rgba(96,165,250,0.3), -16px 0 0 rgba(96,165,250,0.2),
+        0 -8px 0 rgba(96,165,250,0.3), 0 -16px 0 rgba(96,165,250,0.2);
+    }
+    .floating-pixels {
+      position: absolute; pointer-events: none; inset: 0; overflow: hidden;
+    }
+    .fp {
+      position: absolute; width: 4px; height: 4px;
+      background: rgba(96,165,250,0.25);
+      animation: floatPx 8s ease-in-out infinite;
+    }
+    .fp:nth-child(1)  { left: 8%;  top: 20%; animation-delay: 0s;    animation-duration: 9s; }
+    .fp:nth-child(2)  { left: 82%; top: 35%; animation-delay: 1.5s;  animation-duration: 7s; }
+    .fp:nth-child(3)  { left: 25%; top: 75%; animation-delay: 3s;    animation-duration: 11s; }
+    .fp:nth-child(4)  { left: 65%; top: 15%; animation-delay: 0.8s;  animation-duration: 8s; }
+    .fp:nth-child(5)  { left: 45%; top: 60%; animation-delay: 2.2s;  animation-duration: 10s; }
+    .fp:nth-child(6)  { left: 90%; top: 80%; animation-delay: 4s;    animation-duration: 6s; }
+    @keyframes floatPx {
+      0%,100% { transform: translateY(0) scale(1); opacity: 0.25; }
+      50%      { transform: translateY(-20px) scale(1.5); opacity: 0.5; }
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .intro-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+      .demo-step, .demo-step.reverse { grid-template-columns: 1fr; direction: ltr; }
+      .req-grid { grid-template-columns: 1fr 1fr; }
+      .word-demo { grid-template-columns: 1fr; height: auto; }
+      nav ul { display: none; }
+    }
+    @media (max-width: 600px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .req-grid { grid-template-columns: 1fr; }
+      .download-top { flex-direction: column; }
+      .app-mockup { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ──────────────────────── NAV ──────────────────────────────── -->
+<nav>
+  <a href="#" class="nav-brand">Exhi<span>Bytes</span></a>
+  <ul>
+    <li><a href="#intro">About</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#requirements">Requirements</a></li>
+    <li><a href="#download" class="nav-cta">⬇ Download</a></li>
+  </ul>
+</nav>
+
+
+<!-- ──────────────────────── HERO ─────────────────────────────── -->
+<section class="hero">
+  <div class="floating-pixels">
+    <div class="fp"></div><div class="fp"></div><div class="fp"></div>
+    <div class="fp"></div><div class="fp"></div><div class="fp"></div>
+  </div>
+  <div class="hero-content">
+    <div class="pixel-badge">Legal Exhibit Management · Desktop App</div>
+    <h1>Exhi<span>Bytes</span></h1>
+    <p class="hero-byline" style="margin-top:1.5rem">Built by Tan Sze Yao</p>
+    <p class="hero-tagline">
+      The Word-integrated desktop tool that allows you to <strong>manage, cite and export</strong> your exhibits with minimal fuss. New piece of evidence coming in late? <strong>Refresh citations with just one click.</strong>
+    </p>
+    <div class="hero-cta-row">
+      <a href="#download" class="btn-primary">⬇ Download ExhiBytes</a>
+      <a href="#demo" class="btn-secondary">▶ See it in action</a>
+    </div>
+
+    <!-- App Mockup -->
+    <div class="app-mockup">
+      <div class="mockup-bar">
+        <div class="mockup-dot r"></div>
+        <div class="mockup-dot y"></div>
+        <div class="mockup-dot g"></div>
+        <div class="mockup-title">ExhiBytes — Tan Zai Leng vs Zachary Wong Choon Kiat</div>
+      </div>
+      <div class="mockup-body">
+        <!-- Sidebar -->
+        <div class="mock-sidebar">
+          <div class="mock-sidebar-brand">
+            <div class="mock-brand-name">Exhi<span>Bytes</span></div>
+            <div class="mock-brand-sub">Built by Tan Sze Yao</div>
+          </div>
+          <div class="mock-sidebar-section">
+            <div class="mock-section-label">Project</div>
+            <div class="mock-section-val">Tan Zai Leng vs Zachary Wong Choon Kiat</div>
+          </div>
+          <div class="mock-sidebar-section">
+            <div class="mock-section-label">Prefix</div>
+            <div class="mock-section-val exhibit-label">P-N</div>
+          </div>
+          <div class="mock-sidebar-section">
+            <div class="mock-section-label">Exhibits</div>
+            <div class="mock-count">6</div>
+          </div>
+          <div style="padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+            <div class="mock-section-label" style="margin-bottom:4px">Notes on <span style="color:#60a5fa;font-family:monospace">P-3</span></div>
+            <div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:6px 8px;font-size:0.6rem;color:rgba(255,255,255,0.5);height:60px">
+              Expert was cross-examined on 5 Mar 2024. Check transcript para 42...
+            </div>
+          </div>
+        </div>
+
+        <!-- Main -->
+        <div class="mock-main">
+          <div class="mock-toolbar">
+            <div class="mock-btn">← Back</div>
+            <div class="mock-btn">+ Add</div>
+            <div class="mock-btn">🗑 Delete</div>
+            <div class="mock-btn blue">📌 Cite</div>
+            <div class="mock-btn">↻ Refresh</div>
+            <div style="flex:1"></div>
+            <div class="mock-btn">⚙ Settings</div>
+          </div>
+          <div class="mock-table-header">
+            <div></div><div>Label</div><div>Description</div><div>Date</div><div>Pages</div>
+          </div>
+          <div class="mock-table-row">
+            <div class="mock-check"><span style="font-size:7px;color:#6b7280">☐</span></div>
+            <div class="row-label">P-1</div>
+            <div class="row-desc">Statement of Claim</div>
+            <div class="row-date">12 Jan 2024</div>
+            <div class="row-pages">8p</div>
+          </div>
+          <div class="mock-table-row">
+            <div class="mock-check"><span style="font-size:7px;color:#6b7280">☐</span></div>
+            <div class="row-label">P-2</div>
+            <div class="row-desc">Witness Statement of Piplup</div>
+            <div class="row-date">3 Mar 2024</div>
+            <div class="row-pages">5p</div>
+          </div>
+          <div class="mock-table-row selected">
+            <div class="mock-check checked" style="background:#2563eb;border-color:#2563eb;color:white;font-size:8px">✓</div>
+            <div class="row-label">P-3</div>
+            <div class="row-desc">Expert Report (Prof. Torterra)</div>
+            <div class="row-date">15 Feb 2024</div>
+            <div class="row-pages">12p</div>
+          </div>
+          <div class="mock-table-row">
+            <div class="mock-check"><span style="font-size:7px;color:#6b7280">☐</span></div>
+            <div class="row-label">P-4</div>
+            <div class="row-desc">Board Minutes (18 Jan 2024)</div>
+            <div class="row-date">18 Jan 2024</div>
+            <div class="row-pages">4p</div>
+          </div>
+          <div class="mock-table-row">
+            <div class="mock-check"><span style="font-size:7px;color:#6b7280">☐</span></div>
+            <div class="row-label">P-5</div>
+            <div class="row-desc">Photographic Evidence</div>
+            <div class="row-date">—</div>
+            <div class="row-pages">3p</div>
+          </div>
+          <div class="mock-table-row">
+            <div class="mock-check"><span style="font-size:7px;color:#6b7280">☐</span></div>
+            <div class="row-label">P-6</div>
+            <div class="row-desc">Email Correspondence Bundle</div>
+            <div class="row-date">—</div>
+            <div class="row-pages">28p</div>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div class="mock-preview">
+          <div class="mock-preview-header">
+            <div>
+              <div class="mock-preview-label">Preview</div>
+              <div class="mock-preview-exhibit">P-3</div>
+            </div>
+            <span style="color:#9ca3af;font-size:0.9rem;cursor:pointer">×</span>
+          </div>
+          <div class="mock-preview-body">
+            <div class="mock-page">
+              <div class="mock-page-inner">
+                <div class="mock-page-line short" style="background:#1d4ed8;opacity:0.6"></div>
+                <div class="mock-page-line med"></div>
+                <div class="mock-page-line"></div>
+                <div class="mock-page-line short"></div>
+                <div class="mock-page-line med blue-line"></div>
+                <div class="mock-page-line"></div>
+                <div class="mock-page-line short"></div>
+              </div>
+            </div>
+            <div class="mock-page">
+              <div class="mock-page-inner">
+                <div class="mock-page-line"></div>
+                <div class="mock-page-line med"></div>
+                <div class="mock-page-line short"></div>
+                <div class="mock-page-line med blue-line"></div>
+                <div class="mock-page-line"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ──────────────────────── INTRO ────────────────────────────── -->
+<section id="intro">
+  <div class="container">
+    <div class="intro-grid">
+      <div class="intro-text">
+        <div class="section-label">What is ExhiBytes?</div>
+        <h2 class="section-title">Your exhibit bundle,<br>under control.</h2>
+        <p>
+          ExhiBytes is a <strong>Windows desktop application</strong> built for lawyers, litigators,
+          and legal professionals who deal with exhibit bundles. Whether you're preparing for trial,
+          an arbitration, or a transactional filing, ExhiBytes handles the tedious parts so you can
+          focus on the substance.
+        </p>
+        <p>
+          Drop in your documents — PDFs, Word files, Excel sheets, PowerPoints — and ExhiBytes
+          <strong>automatically converts, numbers, and organises</strong> them into a sequentially
+          labelled exhibit list. Change the order, add descriptions, log dates, and keep private notes
+          on each exhibit.
+        </p>
+        <p>
+          The real magic is the <strong>Word integration</strong>: insert live citation controls
+          directly into your submissions or skeleton arguments, then refresh them all at once
+          whenever your exhibit list changes. Export a complete, court-ready bundle with a single click.
+        </p>
+      </div>
+      <div class="intro-stats">
+        <div class="stat-card">
+          <div class="pixel-corner-tl"></div>
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Exhibits per project</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">16</div>
+          <div class="stat-label">File formats supported (PDF, DOCX, XLSX, PPTX, EML, PNG, TXT, ODT and more)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1×</div>
+          <div class="stat-label">Click to refresh all citations in Word</div>
+        </div>
+        <div class="stat-card">
+          <div class="pixel-corner-br"></div>
+          <div class="stat-num">0</div>
+          <div class="stat-label">Cloud uploads — everything stays on your machine</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ──────────────────────── FEATURES ─────────────────────────── -->
+<section id="features">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Fully featured,<br>yet lightweight.</h2>
+      <p class="section-sub">
+        ExhiBytes is purpose-built for legal work — no bloat, no subscription, no cloud.
+      </p>
+    </div>
+    <div class="features-grid">
+
+      <div class="feature-card">
+        <div class="feature-icon">📁</div>
+        <h3>Drag-and-Drop Upload</h3>
+        <p>Drop any mix of files — PDF, DOCX, DOC, XLSX, XLS, PPTX, PPT, ODT, ODS, ODP, RTF, TXT, PNG, JPG, JPEG, and EML. ExhiBytes converts them to PDF automatically.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🏷️</div>
+        <h3>Auto-Numbering &amp; Labels</h3>
+        <p>Configure your prefix (e.g. <code style="color:var(--blue3);font-size:0.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:3px">P-</code>, <code style="color:var(--blue3);font-size:0.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:3px">A-</code>) and separator. Exhibits are sequentially numbered and re-labelled automatically when you reorder or delete.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🖼️</div>
+        <h3>In-App PDF Preview</h3>
+        <p>Click any exhibit to see a full multi-page PDF preview in the right-hand panel — no need to open a separate viewer.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📌</div>
+        <h3>Word Citation Controls</h3>
+        <p>Place your cursor in Word, select an exhibit, and click <em>Cite</em>. A live content control is inserted at your cursor — linked back to the exhibit.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">↻</div>
+        <h3>One-Click Citation Refresh</h3>
+        <p>Reorder your exhibits? Click <em>Refresh Citations</em> to update every content control in your Word document to the new labels — instantly.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📦</div>
+        <h3>Export Bundle</h3>
+        <p>Export the entire exhibit bundle as a single ZIP file — numbered PDFs in a flat folder, ready to attach to court submissions or share with counterparts.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Per-Exhibit Notes</h3>
+        <p>Keep private notes on any exhibit — provenance, remarks, to-dos. Notes are stored locally and never leave your machine.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🗃️</div>
+        <h3>Multiple Projects</h3>
+        <p>Organise your work into separate projects — one per matter, per client, or per filing. Switch between them instantly.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>100% Offline &amp; Private</h3>
+        <p>ExhiBytes runs entirely on your local machine. No cloud accounts, no telemetry, no internet required after install. Your documents never leave your computer.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ──────────────────────── DEMO ─────────────────────────────── -->
+<section id="demo">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">From files to bundle<br>in minutes.</h2>
+      <p class="section-sub">
+        A step-by-step walkthrough of the ExhiBytes workflow — from uploading your first
+        document to exporting a court-ready bundle with live Word citations.
+      </p>
+    </div>
+
+    <div class="demo-steps">
+
+      <!-- STEP 1: Upload -->
+      <div class="demo-step">
+        <div>
+          <div class="step-number">Step 01</div>
+          <h3 class="step-title">Drop your documents in</h3>
+          <p class="step-desc">
+            Drag any combination of <strong>PDFs, Word documents, Excel sheets, and PowerPoint files</strong>
+            into the drop zone. ExhiBytes queues them for processing.
+          </p>
+          <ul class="step-bullets">
+            <li>All Office formats are automatically converted to PDF via LibreOffice</li>
+            <li>Files are assigned sequential exhibit labels (e.g. P-1, P-2, P-3…)</li>
+            <li>A real-time progress indicator tracks each conversion</li>
+            <li>Multiple files can be dropped at once</li>
+          </ul>
+        </div>
+        <div class="demo-panel">
+          <div class="demo-panel-bar">
+            <div class="dp-dot r"></div><div class="dp-dot y"></div><div class="dp-dot g"></div>
+            <div class="demo-panel-title">ExhiBytes</div>
+          </div>
+          <div class="drop-zone-demo">
+            <div class="drop-zone-icon">⬇</div>
+            <div class="drop-zone-text">
+              <strong>Drop files here to add exhibits</strong>
+              PDF, DOCX, XLSX, PPTX, DOC supported
+            </div>
+            <div class="file-chips">
+              <div class="file-chip"><span class="chip-icon">📄</span> Witness_Statement.docx</div>
+              <div class="file-chip"><span class="chip-icon">📑</span> Expert_Report.pdf</div>
+              <div class="file-chip"><span class="chip-icon">📧</span> Emails_Bundle.eml</div>
+              <div class="file-chip"><span class="chip-icon">📄</span> Board_Minutes.docx</div>
+            </div>
+            <div style="width:100%">
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.4);margin-bottom:4px">Converting Witness_Statement.docx…</div>
+              <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: Manage -->
+      <div class="demo-step reverse">
+        <div class="demo-panel">
+          <div class="demo-panel-bar">
+            <div class="dp-dot r"></div><div class="dp-dot y"></div><div class="dp-dot g"></div>
+            <div class="demo-panel-title">ExhiBytes — Exhibit List</div>
+          </div>
+          <div class="exhibit-table-demo">
+            <div class="etd-header">
+              <div></div><div>Label</div><div>Description</div><div>Date</div>
+            </div>
+            <div class="etd-row">
+              <div style="font-size:0.7rem;color:rgba(255,255,255,0.2)">☐</div>
+              <div class="etd-label">P-1</div>
+              <div class="etd-desc">Statement of Claim</div>
+              <div class="etd-date">12 Jan 2024</div>
+            </div>
+            <div class="etd-row">
+              <div style="font-size:0.7rem;color:rgba(255,255,255,0.2)">☐</div>
+              <div class="etd-label">P-2</div>
+              <div class="etd-desc">Witness Statement of Piplup</div>
+              <div class="etd-date">3 Mar 2024</div>
+            </div>
+            <div class="etd-row sel">
+              <div style="font-size:0.8rem;color:#60a5fa">☑</div>
+              <div class="etd-label">P-3</div>
+              <div class="etd-desc">Expert Report (Prof. Torterra)</div>
+              <div class="etd-date">15 Feb 2024</div>
+            </div>
+            <div class="etd-row">
+              <div style="font-size:0.7rem;color:rgba(255,255,255,0.2)">☐</div>
+              <div class="etd-label">P-4</div>
+              <div class="etd-desc">Email Correspondence Bundle</div>
+              <div class="etd-date">—</div>
+            </div>
+            <div style="padding:10px 12px;background:rgba(255,255,255,0.02);font-size:0.6rem;color:rgba(255,255,255,0.3);display:flex;gap:12px">
+              <span>Drag rows to reorder</span>
+              <span>·</span>
+              <span>Right-click for options</span>
+              <span>·</span>
+              <span>Click to preview</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="step-number">Step 02</div>
+          <h3 class="step-title">Organise &amp; annotate</h3>
+          <p class="step-desc">
+            Once uploaded, your exhibits appear in the main table.
+            <strong>Drag and drop to reorder</strong> — labels update automatically.
+            Add descriptions, dates, and private notes to each exhibit.
+          </p>
+          <ul class="step-bullets">
+            <li>Drag rows to reorder; exhibit labels (P-1, P-2…) adjust automatically</li>
+            <li>Right-click any row to insert an exhibit above or below</li>
+            <li>Add a description and date of document per exhibit</li>
+            <li>Click any row to open a PDF preview in the right panel</li>
+            <li>Keep private notes on each exhibit — saved locally</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- STEP 3: Cite -->
+      <div class="demo-step">
+        <div>
+          <div class="step-number">Step 03</div>
+          <h3 class="step-title">Cite directly into Word</h3>
+          <p class="step-desc">
+            Place your cursor anywhere in your Word document — body text, footnotes, headers —
+            then select an exhibit and click <strong>Cite in Word</strong>.
+            A linked content control appears at your cursor, formatted using your citation template.
+          </p>
+          <ul class="step-bullets">
+            <li>Works with any open Word document — select from the dropdown, or defaults to the active window</li>
+            <li>Citation template is fully customisable (e.g. <code style="color:var(--blue3);font-size:0.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:3px">Exhibit {label}, {description}, {date}</code>)</li>
+            <li>Each citation is a tagged content control — tracked back to the exhibit</li>
+            <li>Works in body text, footnotes, endnotes, headers and footers</li>
+          </ul>
+        </div>
+        <div class="demo-panel">
+          <div class="demo-panel-bar">
+            <div class="dp-dot r"></div><div class="dp-dot y"></div><div class="dp-dot g"></div>
+            <div class="demo-panel-title">Cite in Word</div>
+          </div>
+          <div class="word-demo">
+            <div class="word-app-side">
+              <div class="word-side-label">ExhiBytes</div>
+              <div class="word-exhibit-sel">
+                <div class="sel-label">P-3 ✓ selected</div>
+                <div class="sel-desc">Expert Report (Prof. Torterra)</div>
+              </div>
+              <div class="cite-template">
+                Template: <code>Exhibit {label}, {description}, {date}</code>
+              </div>
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.35);margin-top:4px">
+                Will insert: <span style="color:#93c5fd">Exhibit P-3, Expert Report (Prof. Torterra), 15 February 2024</span>
+              </div>
+              <div style="margin-top:auto">
+                <div style="font-size:0.58rem;color:rgba(255,255,255,0.3);margin-bottom:6px">Target document:</div>
+                <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:5px 8px;font-size:0.65rem;color:rgba(255,255,255,0.5)">
+                  Piplup_Submissions.docx ✓
+                </div>
+              </div>
+              <div class="cite-btn-demo">
+                📌 Cite in Word
+              </div>
+            </div>
+            <div class="word-doc-side">
+              <div class="word-toolbar">
+                <div class="word-toolbar-brand">W  Word</div>
+                <div style="flex:1;text-align:center;font-size:0.6rem;color:rgba(255,255,255,0.5)">Piplup_Submissions.docx</div>
+              </div>
+              <div class="word-doc-body">
+                <div class="word-line short" style="background:#374151;height:6px;margin-bottom:8px"></div>
+                <div class="word-line long"></div>
+                <div class="word-line med"></div>
+                <div class="word-line-with-cite">
+                  <div class="word-inline" style="width:30%;height:5px"></div>
+                  <div class="word-citation">Exhibit P-1, Statement of Claim, 12 Jan 2024</div>
+                  <div class="word-inline" style="width:15%;height:5px"></div>
+                </div>
+                <div class="word-line long"></div>
+                <div class="word-line med"></div>
+                <div class="word-line-with-cite">
+                  <div class="word-inline" style="width:20%;height:5px"></div>
+                  <div class="word-citation" style="animation-delay:1.5s">Exhibit P-3, Expert Report (Prof. Torterra), 15 Feb 2024</div>
+                  <div class="word-inline" style="width:10%;height:5px"></div>
+                </div>
+                <div class="word-line med"></div>
+                <div class="word-line long"></div>
+                <div class="word-line short"></div>
+                <div style="width:2px;height:14px;background:#1d4ed8;display:inline-block;animation:blink 1s infinite;margin-left:2px"></div>
+                <style>@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}</style>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Refresh -->
+      <div class="demo-step reverse">
+        <div class="demo-panel">
+          <div class="demo-panel-bar">
+            <div class="dp-dot r"></div><div class="dp-dot y"></div><div class="dp-dot g"></div>
+            <div class="demo-panel-title">Refresh Citations</div>
+          </div>
+          <div class="refresh-demo">
+            <div class="refresh-header">
+              <div class="refresh-title">Citations in Piplup_Submissions.docx</div>
+              <div class="refresh-btn">↻ Refresh All</div>
+            </div>
+            <div class="refresh-item">
+              <div class="refresh-tag">EXMGR…P1</div>
+              <div class="refresh-text">Exhibit P-1, Statement of Claim, 12 Jan 2024</div>
+              <div class="refresh-badge badge-updated">Updated</div>
+            </div>
+            <div class="refresh-item">
+              <div class="refresh-tag">EXMGR…P2</div>
+              <div class="refresh-text">Exhibit P-2, Witness Statement of Piplup, 3 Mar 2024</div>
+              <div class="refresh-badge badge-updated">Updated</div>
+            </div>
+            <div class="refresh-item">
+              <div class="refresh-tag">EXMGR…P3</div>
+              <div class="refresh-text">Exhibit P-3, Expert Report (Prof. Torterra), 15 Feb 2024</div>
+              <div class="refresh-badge badge-updated">Updated</div>
+            </div>
+            <div class="refresh-item">
+              <div class="refresh-tag">EXMGR…XX</div>
+              <div class="refresh-text" style="color:rgba(255,255,255,0.35)">Deleted exhibit (no longer in project)</div>
+              <div class="refresh-badge badge-orphaned">Orphaned</div>
+            </div>
+            <div class="refresh-summary">
+              ✓ Updated 3 citations · 1 orphaned · 4 controls found in "Piplup_Submissions.docx"
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="step-number">Step 04</div>
+          <h3 class="step-title">Refresh citations in one click</h3>
+          <p class="step-desc">
+            Reordered your exhibits? Added new ones? Click <strong>Refresh Citations</strong>
+            and ExhiBytes updates every content control in your Word document to
+            reflect the current exhibit labels and descriptions.
+          </p>
+          <ul class="step-bullets">
+            <li>All citation controls in the target document are scanned and updated</li>
+            <li>Controls linked to deleted exhibits are flagged as <em>orphaned</em> — so you know what to clean up</li>
+            <li>Detailed toast notification tells you exactly what changed</li>
+            <li>No need to manually hunt for citations across a 100-page submission</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- STEP 5: Export -->
+      <div class="demo-step">
+        <div>
+          <div class="step-number">Step 05</div>
+          <h3 class="step-title">Export the complete bundle</h3>
+          <p class="step-desc">
+            When you're ready, click <strong>Export Bundle</strong> to generate a ZIP file
+            containing all exhibits as individually numbered PDFs — labelled and ready
+            to attach to court filings or share with counterparts.
+          </p>
+          <ul class="step-bullets">
+            <li>All exhibits exported as PDFs with their exhibit label in the filename</li>
+            <li>Files are numbered in order: <code style="color:var(--blue3);font-size:0.8rem;background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:3px">P-1 Statement of Claim.pdf</code></li>
+            <li>Single ZIP file — easy to attach to emails or file with court</li>
+            <li>Choose a save location via the standard file save dialog</li>
+          </ul>
+        </div>
+        <div class="demo-panel">
+          <div class="demo-panel-bar">
+            <div class="dp-dot r"></div><div class="dp-dot y"></div><div class="dp-dot g"></div>
+            <div class="demo-panel-title">Export Bundle</div>
+          </div>
+          <div class="export-demo">
+            <div style="font-size:0.72rem;color:rgba(255,255,255,0.6);margin-bottom:0.75rem">
+              Exporting <strong style="color:white">4 exhibits</strong> from <span style="color:var(--blue3)">Tan Zai Leng vs Zachary Wong Choon Kiat</span>
+            </div>
+            <div class="export-options">
+              <div class="export-opt">
+                <input type="checkbox" checked readonly /> <label>Include all exhibits (4)</label>
+                <span class="opt-badge">4 PDFs</span>
+              </div>
+            </div>
+            <div class="export-go">📦 Export as ZIP</div>
+            <div class="export-files">
+              <div style="font-size:0.62rem;color:rgba(255,255,255,0.3);margin-bottom:6px;margin-top:8px">Output contents:</div>
+              <div class="export-file-item"><span class="fi-icon">📑</span> P-1 Statement of Claim.pdf</div>
+              <div class="export-file-item"><span class="fi-icon">📑</span> P-2 Witness Statement of Piplup.pdf</div>
+              <div class="export-file-item"><span class="fi-icon">📑</span> P-3 Expert Report (Prof. Torterra).pdf</div>
+              <div class="export-file-item"><span class="fi-icon">📑</span> P-4 Email Correspondence Bundle.pdf</div>
+              <div class="export-file-item" style="color:rgba(255,255,255,0.25)"><span class="fi-icon">🗜️</span> <em>Piplup_v_Empoleon_Bundle.zip</em></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ──────────────────── SYSTEM REQUIREMENTS ──────────────────── -->
+<section id="requirements">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-label">System Requirements</div>
+      <h2 class="section-title">What you need to run ExhiBytes</h2>
+    </div>
+    <div class="req-grid">
+      <div class="req-card">
+        <div class="req-icon">🖥️</div>
+        <h3>Operating System</h3>
+        <ul class="req-list">
+          <li>Windows 10 (64-bit) or later</li>
+          <li>Windows 11 recommended</li>
+          <li>macOS and Linux: <em>not supported</em> in this release</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">⚙️</div>
+        <h3>Hardware</h3>
+        <ul class="req-list">
+          <li>4 GB RAM minimum (8 GB recommended)</li>
+          <li>500 MB free disk space for the application</li>
+          <li>Additional space for your exhibit files</li>
+          <li>1280 × 720 screen resolution or higher</li>
+        </ul>
+      </div>
+      <div class="req-card">
+        <div class="req-icon">📦</div>
+        <h3>Dependencies</h3>
+        <ul class="req-list">
+          <li><strong>LibreOffice 7+</strong> — required for converting DOCX, XLSX, PPTX to PDF. The installer will offer to install this for you.</li>
+          <li><strong>Microsoft Word</strong> — required only for the Word citation feature. Any version with COM automation support (Office 2013+).</li>
+          <li>No internet connection required after install.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="req-note">
+      <div class="req-note-icon">ℹ️</div>
+      <div>
+        <strong style="color:white;display:block;margin-bottom:0.25rem">PDFs only?</strong>
+        If you only work with PDF files, LibreOffice is not strictly required.
+        LibreOffice is only needed to convert Office format files (DOCX, XLSX, PPTX, DOC) to PDF.
+        The app will warn you if LibreOffice is missing and you try to add a non-PDF file.
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- ──────────────────────── DOWNLOAD ─────────────────────────── -->
+<section id="download">
+  <div class="container">
+    <div class="section-label" style="margin-bottom:2rem">Download &amp; Install</div>
+    <div class="download-card">
+      <div class="download-top">
+        <div class="download-info">
+          <h2>ExhiBytes v1.0.0</h2>
+          <p>A self-contained Windows installer bundle — includes the application and the LibreOffice installer. Just extract and run <code style="background:rgba(255,255,255,0.08);padding:2px 6px;border-radius:3px;font-size:0.85rem;color:var(--blue4)">Install.bat</code>.</p>
+          <div class="download-meta">
+            <div class="dl-meta-item">
+              <strong>Windows</strong>
+              Platform
+            </div>
+            <div class="dl-meta-item">
+              <strong>v1.0.0</strong>
+              Version
+            </div>
+            <div class="dl-meta-item">
+              <strong>~820 MB</strong>
+              Download size
+            </div>
+            <div class="dl-meta-item">
+              <strong>Offline</strong>
+              No internet needed
+            </div>
+          </div>
+          <a href="ExhiBytes-v1.0.0-Setup.zip" class="btn-primary" download>
+            ⬇ Download ExhiBytes-v1.0.0-Setup.zip
+          </a>
+        </div>
+      </div>
+
+      <div class="install-steps">
+        <h3>Installation Instructions</h3>
+        <div class="install-step-list">
+          <div class="install-step">
+            <div class="install-step-num">1</div>
+            <div class="install-step-text">
+              <strong>Download the ZIP file</strong> using the button above and save it to a convenient location (e.g. your Downloads folder).
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-step-num">2</div>
+            <div class="install-step-text">
+              <strong>Extract the ZIP file.</strong> Right-click the downloaded file and select <em>Extract All…</em>, then choose a destination folder.
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-step-num">3</div>
+            <div class="install-step-text">
+              <strong>Run <code>Install.bat</code> as Administrator.</strong> Right-click <code>Install.bat</code> inside the extracted folder and select <em>Run as administrator</em>. The installer will check for LibreOffice and offer to install it if missing.
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-step-num">4</div>
+            <div class="install-step-text">
+              <strong>Follow the prompts.</strong> The installer copies ExhiBytes to <code>C:\Program Files\ExhiBytes\</code> and creates Desktop and Start Menu shortcuts.
+            </div>
+          </div>
+          <div class="install-step">
+            <div class="install-step-num">5</div>
+            <div class="install-step-text">
+              <strong>Launch ExhiBytes</strong> from the Desktop shortcut or the Start Menu. No further configuration required.
+            </div>
+          </div>
+        </div>
+
+        <div class="libreoffice-note">
+          <h4>⚠ Note about LibreOffice</h4>
+          <p>
+            LibreOffice is required to convert Office documents (DOCX, XLSX, PPTX, DOC) to PDF.
+            The installer will detect whether LibreOffice is already installed on your system.
+            If it is not found, you will be prompted to install it — the LibreOffice installer
+            (<code style="color:#fcd34d;font-size:0.8rem">LibreOffice_26.2.2_Win_x86-64.msi</code>) is
+            bundled inside the ZIP. The installation process may take a few minutes.
+            If you only work with PDF files, you may skip the LibreOffice installation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ──────────────────────── FOOTER ───────────────────────────── -->
+<footer>
+  <div class="footer-brand">Exhi<span>Bytes</span></div>
+  <div class="footer-byline">Built by Tan Sze Yao</div>
+  <div class="footer-links">
+    <a href="#intro">About</a>
+    <a href="#features">Features</a>
+    <a href="#demo">Demo</a>
+    <a href="#requirements">Requirements</a>
+    <a href="#download">Download</a>
+  </div>
+  <div class="footer-copy">© 2024 ExhiBytes · All rights reserved · Local software — no data leaves your machine</div>
+</footer>
+
+</body>
+</html>
