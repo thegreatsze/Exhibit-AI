@@ -7,8 +7,6 @@ import { registerIpcHandlers } from './ipc-handlers'
 const DB_PATH = path.join(os.homedir(), 'ExhibitManager', 'exhibit-manager.db')
 
 function createWindow(): BrowserWindow {
-  // In a packaged build, extraResources puts icon.ico next to the asar
-  // (process.resourcesPath). In dev mode, use the file from the source tree.
   const iconPath = app.isPackaged
     ? path.join(process.resourcesPath, 'icon.ico')
     : path.join(app.getAppPath(), 'resources', 'icon.ico')

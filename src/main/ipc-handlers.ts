@@ -98,9 +98,7 @@ export function registerIpcHandlers(mainWindow: BrowserWindow): void {
 
   ipcMain.handle('exhibit:list', async (_e, projectId: string) => {
     const exhibits = listExhibits(projectId)
-    // Background-fix page counts that were stored as 0 (e.g. imported before
-    // the encrypted-PDF fix landed). Re-run countPdfPages for any zero-count
-    // exhibit whose PDF file still exists, then persist the corrected value.
+    // Auto-fix page counts stored as 0 (e.g. imported before encrypted-PDF fix).
     for (const ex of exhibits) {
       if (ex.pageCount === 0 && fs.existsSync(ex.pdfPath)) {
         try {

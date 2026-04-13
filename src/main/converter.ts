@@ -166,25 +166,21 @@ export async function countPdfPages(pdfPath: string): Promise<number> {
     const bytes = fs.readFileSync(pdfPath)
 
     // Primary: pdf-lib page-tree traversal.
-    // For encrypted PDFs, load() may succeed (ignoreEncryption:true) but
-    // getPageCount() silently returns 0 without throwing.
-    // Treat count===0 the same as a thrown error and fall through.
+    // For encrypted PDFs, load() may succeed but getPageCount() silently
+    // returns 0 without throwing. Treat count === 0 the same as a throw.
     try {
       const doc = await PDFDocument.load(bytes, { ignoreEncryption: true })
       const count = doc.getPageCount()
       if (count > 0) return count
-    } catch {
-      // pdf-lib threw — fall through to raw scan
-    }
+    } catch { /* fall through */ }
 
-    // Raw-byte fallback: /Count appears in plaintext in the Pages dictionary
-    // even in most encrypted PDFs (integer values are not encrypted).
-    // Find the largest value — the root Pages node has the total count.
+    // Raw-byte fallback: /Count in the Pages dictionary is not encrypted
+    // even in owner-protected PDFs. The largest value is the root page count.
     const raw = bytes.toString('latin1')
     const counts = [...raw.matchAll(/\/Count\s+(\d+)/g)].map(m => parseInt(m[1], 10))
     if (counts.length > 0) return Math.max(...counts)
 
-    // Last resort: count /Type /Page (not /Pages) dictionary entries
+    // Last resort: count individual /Type /Page entries
     const pages = raw.match(/\/Type\s*\/Page[^s]/g)
     return pages ? pages.length : 0
   } catch {

@@ -37,11 +37,16 @@ export async function exportBundle(
   }
 
   // ── Pre-load source PDFs ──────────────────────────────────────────────────────
-  const srcDocs: PDFDocument[] = []
+  // Use null for any exhibit whose PDF cannot be loaded (encrypted, corrupt, etc.)
+  const srcDocs: (PDFDocument | null)[] = []
   const validExhibits: Exhibit[] = []
   for (const exhibit of exhibits) {
     if (!fs.existsSync(exhibit.pdfPath)) continue
-    srcDocs.push(await PDFDocument.load(fs.readFileSync(exhibit.pdfPath), { ignoreEncryption: true }))
+    try {
+      srcDocs.push(await PDFDocument.load(fs.readFileSync(exhibit.pdfPath), { ignoreEncryption: true }))
+    } catch {
+      srcDocs.push(null)
+    }
     validExhibits.push(exhibit)
   }
 
@@ -51,7 +56,8 @@ export async function exportBundle(
   let toc = options.includeCoverPage ? 2 : 1
   for (let i = 0; i < validExhibits.length; i++) {
     dividerPageNums.push(toc)
-    toc += 1 + srcDocs[i].getPageCount()
+    const pageCount = srcDocs[i]?.getPageCount() ?? 1
+    toc += 1 + (pageCount > 0 ? pageCount : 1)
   }
 
   // ── Cover page (not numbered) ─────────────────────────────────────────────────
@@ -109,7 +115,7 @@ export async function exportBundle(
     const srcDoc = srcDocs[i]
     const exhibit = validExhibits[i]
 
-    // ── Divider page (freshly created — can always draw on it) ────────────────
+    // ── Divider page ──────────────────────────────────────────────────────────
     const divider = mergedPdf.addPage(pageSize)
     const cx = pageWidth / 2, cy = pageHeight / 2
 
@@ -130,23 +136,40 @@ export async function exportBundle(
     }
     stampNumber(divider, pageWidth, pageHeight)
 
-    // ── Exhibit pages via embedPages → fresh page ─────────────────────────────
-    // embedPages embeds each source page as a Form XObject in mergedPdf, then
-    // we paint it onto a brand-new page. New pages accept drawText reliably
-    // regardless of the source PDF's content stream structure.
-    const srcPageCount = srcDoc.getPageCount()
+    // ── Exhibit pages ─────────────────────────────────────────────────────────
+    if (srcDoc === null) {
+      // PDF could not be loaded (e.g. strongly encrypted) — insert placeholder
+      const ph = mergedPdf.addPage(pageSize)
+      ph.drawText(`[${exhibit.label}: PDF could not be embedded]`, {
+        x: margin, y: pageHeight / 2, size: 11, font, color: rgb(0.5, 0.5, 0.5)
+      })
+      stampNumber(ph, pageWidth, pageHeight)
+      continue
+    }
+
+    // embedPages embeds each source page as a Form XObject then paints it onto
+    // a fresh page — new pages accept drawText reliably.
+    let srcPageCount = 0
+    try { srcPageCount = srcDoc.getPageCount() } catch { /* leave 0 */ }
+    if (srcPageCount === 0) {
+      const ph = mergedPdf.addPage(pageSize)
+      ph.drawText(`[${exhibit.label}: PDF has no readable pages]`, {
+        x: margin, y: pageHeight / 2, size: 11, font, color: rgb(0.5, 0.5, 0.5)
+      })
+      stampNumber(ph, pageWidth, pageHeight)
+      continue
+    }
+
     const embedded = await mergedPdf.embedPages(
       Array.from({ length: srcPageCount }, (_, j) => srcDoc.getPage(j))
     )
 
     for (let j = 0; j < srcPageCount; j++) {
-      const { width: w, height: h } = srcDoc.getPage(j).getSize()
+      let w = pageWidth, h = pageHeight
+      try { const sz = srcDoc.getPage(j).getSize(); w = sz.width; h = sz.height } catch { /* use defaults */ }
       const newPage = mergedPdf.addPage([w, h])
-
-      // Paint the original page content
       newPage.drawPage(embedded[j])
 
-      // Optional exhibit label footer stamp
       if (options.includeStamps) {
         const stampW = font.widthOfTextAtSize(exhibit.label, 8)
         newPage.drawText(exhibit.label, {
@@ -154,7 +177,6 @@ export async function exportBundle(
           size: 8, font, color: rgb(0.5, 0.5, 0.5)
         })
       }
-
       stampNumber(newPage, w, h)
     }
   }
