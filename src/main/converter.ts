@@ -164,22 +164,32 @@ async function convertEmlToPdf(inputPath: string, outputPath: string): Promise<v
 export async function countPdfPages(pdfPath: string): Promise<number> {
   try {
     const bytes = fs.readFileSync(pdfPath)
-    // Primary: let pdf-lib parse the page tree
+
+    // Primary: let pdf-lib parse the page tree.
+    // Note: for encrypted PDFs, load() may succeed (ignoreEncryption:true)
+    // but getPageCount() silently returns 0 rather than throwing.
+    // Treat count===0 the same as a thrown error and fall through to the
+    // raw-byte fallback below.
     try {
       const doc = await PDFDocument.load(bytes, { ignoreEncryption: true })
-      return doc.getPageCount()
+      const count = doc.getPageCount()
+      if (count > 0) return count
     } catch {
-      // Fallback: scan raw bytes for the Pages /Count entry.
-      // Works for encrypted / structurally unusual PDFs that pdf-lib
-      // can load but then fails to traverse internally.
-      const raw = bytes.toString('latin1')
-      // /Count N  (the root Pages node carries the total page count)
-      const m = raw.match(/\/Count\s+(\d+)/)
-      if (m) return parseInt(m[1], 10)
-      // Last resort: count individual /Type /Page (not /Pages) objects
-      const pages = raw.match(/\/Type\s*\/Page[^s]/g)
-      return pages ? pages.length : 0
+      // pdf-lib threw — fall through to raw scan
     }
+
+    // Raw-byte fallback: scan for /Count in the PDF cross-reference/Pages tree.
+    // This works for encrypted PDFs where pdf-lib returns 0 without throwing,
+    // because the /Count key itself is stored in plaintext in most encryption schemes.
+    const raw = bytes.toString('latin1')
+    // Find the largest /Count value — the root Pages node has the total count;
+    // intermediate nodes have sub-counts. The max is the total page count.
+    const counts = [...raw.matchAll(/\/Count\s+(\d+)/g)].map(m => parseInt(m[1], 10))
+    if (counts.length > 0) return Math.max(...counts)
+
+    // Last resort: count /Type /Page (not /Pages) dictionary entries
+    const pages = raw.match(/\/Type\s*\/Page[^s]/g)
+    return pages ? pages.length : 0
   } catch {
     return 0
   }
