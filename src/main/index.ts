@@ -1,10 +1,16 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell, nativeImage } from 'electron'
 import path from 'path'
 import os from 'os'
 import { initDatabase } from './database'
 import { registerIpcHandlers } from './ipc-handlers'
 
 const DB_PATH = path.join(os.homedir(), 'ExhibitManager', 'exhibit-manager.db')
+
+// Set AUMID before any window is created so Windows taskbar groups and
+// icons the app correctly, regardless of any previously cached AUMID entry.
+if (process.platform === 'win32') {
+  app.setAppUserModelId('com.exhibytes.app')
+}
 
 function createWindow(): BrowserWindow {
   const iconPath = app.isPackaged
@@ -27,7 +33,14 @@ function createWindow(): BrowserWindow {
     }
   })
 
-  mainWindow.on('ready-to-show', () => mainWindow.show())
+  // Explicitly push the icon to the taskbar button after the window is ready.
+  // This covers cases where the constructor icon option alone doesn't update
+  // the taskbar (e.g. stale AUMID cache from a previous install).
+  mainWindow.on('ready-to-show', () => {
+    const icon = nativeImage.createFromPath(iconPath)
+    if (!icon.isEmpty()) mainWindow.setIcon(icon)
+    mainWindow.show()
+  })
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url)

@@ -113,7 +113,10 @@ powershell -NoProfile -NonInteractive -Command ^
   "$s.Description = 'ExhiBytes - Legal Exhibit Bundle Management'; " ^
   "$s.Save()" >nul 2>&1
 
-:: ── Clear icon cache (shortcut + taskbar pinned icon) ───────────────────────
+:: ── Clear ALL Windows icon caches and restart Explorer ──────────────────────
+echo  Refreshing icon cache...
+taskkill /f /im explorer.exe >nul 2>&1
+timeout /t 1 /nobreak >nul
 if exist "%LOCALAPPDATA%\IconCache.db" del /F /Q "%LOCALAPPDATA%\IconCache.db" >nul 2>&1
 for /f "delims=" %%f in ('dir /b "%LOCALAPPDATA%\Microsoft\Windows\Explorer\iconcache*.db" 2^>nul') do (
     del /F /Q "%LOCALAPPDATA%\Microsoft\Windows\Explorer\%%f" >nul 2>&1
@@ -121,8 +124,8 @@ for /f "delims=" %%f in ('dir /b "%LOCALAPPDATA%\Microsoft\Windows\Explorer\icon
 for /f "delims=" %%f in ('dir /b "%LOCALAPPDATA%\Microsoft\Windows\Explorer\thumbcache*.db" 2^>nul') do (
     del /F /Q "%LOCALAPPDATA%\Microsoft\Windows\Explorer\%%f" >nul 2>&1
 )
-ie4uinit.exe -ClearIconCache >nul 2>&1
-ie4uinit.exe -show >nul 2>&1
+start explorer.exe
+timeout /t 2 /nobreak >nul
 
 :: ── Done ─────────────────────────────────────────────────────────────────────
 echo.
