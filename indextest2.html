@@ -554,97 +554,154 @@
       .wrap { padding: 0 1.25rem; }
     }
 
-    /* ══ WORD CITATION ANIMATION ═══════════════════════════════ */
+    /* ══ INTERACTIVE WORD CITATION DEMO ═══════════════════════════════ */
+    .wca-wrap { width:100%; max-width:500px; display:flex; flex-direction:column; gap:7px; }
+    /* Tutorial bar */
+    .tut-bar {
+      background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.26);
+      border-radius: 5px; padding: 9px 12px;
+      font-family: 'IBM Plex Mono','Courier New',monospace; font-size: 0.74em;
+    }
+    .tut-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+    .tut-step-num { color: rgba(56,189,248,0.5); font-size:0.88em; }
+    .tut-instr { color:#e8e3d8; line-height:1.45; }
+    .tut-btns { margin-top:6px; display:flex; gap:5px; }
+    .tut-btn {
+      padding:2px 8px; border-radius:2px; cursor:pointer; font-family:inherit; font-size:0.88em;
+      border:1px solid rgba(56,189,248,0.3); background:rgba(56,189,248,0.08); color:#38bdf8;
+      transition:background 0.15s;
+    }
+    .tut-btn:hover { background:rgba(56,189,248,0.18); }
+    .tut-skip {
+      border-color:rgba(255,255,255,0.12); background:transparent; color:rgba(255,255,255,0.3);
+    }
+    .tut-skip:hover { background:rgba(255,255,255,0.05); color:rgba(255,255,255,0.5); }
+    /* Pulsing highlight on tutorial targets */
+    .tut-hl {
+      outline: 2px solid rgba(56,189,248,0.75) !important; outline-offset:2px !important;
+      border-radius:3px; animation: tut-glow 1.4s ease-in-out infinite;
+    }
+    @keyframes tut-glow {
+      0%,100%{ box-shadow:0 0 0 3px rgba(56,189,248,0.12); }
+      50%     { box-shadow:0 0 0 7px rgba(56,189,248,0.04), 0 0 18px rgba(56,189,248,0.35); }
+    }
+    /* WCA widget */
     .wca {
-      width: 100%; max-width: 500px;
-      border-radius: 7px; overflow: hidden;
-      border: 1px solid rgba(56,189,248,0.22);
-      box-shadow: 0 20px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03);
-      font-family: 'IBM Plex Mono','Courier New',monospace;
-      font-size: 13px; position: relative; z-index: 1;
+      width:100%; border-radius:7px; overflow:hidden;
+      border:1px solid rgba(56,189,248,0.22);
+      box-shadow:0 18px 46px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.03);
+      font-family:'IBM Plex Mono','Courier New',monospace; font-size:12px;
     }
     .wca-bar {
-      background: #040810; padding: 7px 10px;
-      display: flex; align-items: center; gap: 6px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
+      background:#040810; padding:7px 10px;
+      display:flex; align-items:center; gap:5px;
+      border-bottom:1px solid rgba(255,255,255,0.07);
     }
-    .wca-bar-dots { display: flex; gap: 4px; flex-shrink: 0; }
-    .wca-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; font-style: normal; }
-    .wca-dot.r{background:#ef4444}.wca-dot.y{background:#f59e0b}.wca-dot.g{background:#22c55e}
-    .wca-bar-title { flex: 1; text-align: center; font-size: 0.58em; color: rgba(255,255,255,0.2); }
-    .wca-bar-btns { display: flex; gap: 4px; }
+    .wca-bar-dots { display:flex; gap:4px; flex-shrink:0; }
+    .wca-dot { width:8px; height:8px; border-radius:50%; display:inline-block; font-style:normal; }
+    .wca-dot.r{background:#ef4444} .wca-dot.y{background:#f59e0b} .wca-dot.g{background:#22c55e}
+    .wca-bar-title { flex:1; text-align:center; font-size:0.72em; color:rgba(255,255,255,0.2); }
+    .wca-bar-btns { display:flex; gap:4px; }
     .wca-tbtn {
-      padding: 2px 8px; border-radius: 2px;
-      border: 1px solid rgba(255,255,255,0.14);
-      background: rgba(255,255,255,0.05);
-      color: rgba(255,255,255,0.55);
-      font-size: 0.78em; font-family: inherit;
-      cursor: default; white-space: nowrap;
-      transition: all 0.2s;
+      padding:2px 8px; border-radius:2px; cursor:pointer; font-family:inherit;
+      border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.45); font-size:0.78em; white-space:nowrap; transition:all 0.15s;
     }
-    .wca-tbtn-a { border-color: rgba(56,189,248,0.4) !important; color: #38bdf8 !important; background: rgba(56,189,248,0.07) !important; }
-    .wca-flash  { background: #38bdf8 !important; color: #000 !important; border-color: #38bdf8 !important; transform: scale(1.06); }
-    .wca-body { display: grid; grid-template-columns: 1fr 1fr; }
+    .wca-tbtn:hover { background:rgba(255,255,255,0.1); color:rgba(255,255,255,0.75); }
+    .wca-tbtn-a { border-color:rgba(56,189,248,0.4)!important; color:#38bdf8!important; background:rgba(56,189,248,0.07)!important; }
+    .wca-tbtn-a:hover { background:rgba(56,189,248,0.16)!important; }
+    .wca-body { display:grid; grid-template-columns:1fr 1fr; }
+    /* Exhibit list */
     .wca-app {
-      background: #090d18; border-right: 1px solid rgba(255,255,255,0.07);
-      display: flex; flex-direction: column;
+      background:#090d18; border-right:1px solid rgba(255,255,255,0.07);
+      display:flex; flex-direction:column;
     }
     .wca-app-thead {
-      display: grid; grid-template-columns: 44px 1fr 52px;
-      padding: 4px 10px; font-size: 0.72em;
-      color: rgba(255,255,255,0.26); text-transform: uppercase; letter-spacing: 0.07em;
-      background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.04);
+      display:grid; grid-template-columns:38px 1fr 40px;
+      padding:4px 8px; font-size:0.72em;
+      color:rgba(255,255,255,0.25); text-transform:uppercase; letter-spacing:0.07em;
+      background:rgba(255,255,255,0.02); border-bottom:1px solid rgba(255,255,255,0.04);
     }
     .wca-row {
-      display: grid; grid-template-columns: 44px 1fr 52px;
-      padding: 6px 10px; border-bottom: 1px solid rgba(255,255,255,0.04);
-      align-items: center; font-size: 0.88em; transition: background 0.3s;
+      display:grid; grid-template-columns:38px 1fr 40px;
+      padding:6px 8px; border-bottom:1px solid rgba(255,255,255,0.04);
+      align-items:center; font-size:0.88em; cursor:pointer;
+      transition:background 0.15s; position:relative;
     }
-    .wca-row.sel   { background: rgba(37,99,235,0.18); }
-    .wca-row.new   { background: rgba(16,185,129,0.1); animation: wca-in 0.4s ease-out; }
-    .wca-row.shift { animation: wca-shift 0.35s ease-out; }
-    @keyframes wca-in    { from{opacity:0;transform:translateY(-7px)} to{opacity:1;transform:none} }
-    @keyframes wca-shift { from{opacity:0.6;transform:translateY(-4px)} to{opacity:1;transform:none} }
-    .wca-rl  { color: #7dd3fc; font-weight: 700; }
-    .wca-rd  { color: rgba(255,255,255,0.6); font-size: 0.85em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .wca-rdt { color: rgba(255,255,255,0.26); font-size: 0.78em; }
-    .wca-word { background: #f4f3ef; display: flex; flex-direction: column; }
+    .wca-row:hover { background:rgba(255,255,255,0.03); }
+    .wca-row.sel { background:rgba(37,99,235,0.18); }
+    .wca-rl { color:#7dd3fc; font-weight:700; font-size:0.95em; }
+    .wca-rd {
+      color:rgba(255,255,255,0.58); font-size:0.9em;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      cursor:text; padding:1px 3px; border-radius:2px; transition:background 0.1s;
+    }
+    .wca-rd:hover { background:rgba(255,255,255,0.07); }
+    .wca-rdt { color:rgba(255,255,255,0.24); font-size:0.8em; }
+    .wca-rename-input {
+      background:rgba(56,189,248,0.08); border:1px solid #38bdf8;
+      border-radius:2px; padding:1px 4px; color:white;
+      font-family:inherit; font-size:inherit; width:100%; outline:none;
+    }
+    /* Move buttons (overlaid on right side of row) */
+    .wca-move-col {
+      display:flex; flex-direction:column; gap:1px;
+      position:absolute; right:5px; top:50%; transform:translateY(-50%);
+    }
+    .wca-mv {
+      background:rgba(255,255,255,0.07); border:none;
+      color:rgba(255,255,255,0.4); font-size:0.65em;
+      cursor:pointer; padding:1px 4px; border-radius:1px; line-height:1.2;
+      transition:background 0.1s, color 0.1s;
+    }
+    .wca-mv:hover:not(:disabled) { background:rgba(56,189,248,0.22); color:#38bdf8; }
+    .wca-mv:disabled { opacity:0.18; cursor:default; }
+    /* Word doc */
+    .wca-word { background:#f4f3ef; display:flex; flex-direction:column; }
     .wca-word-bar {
-      background: #2b579a; padding: 5px 9px;
-      display: flex; align-items: center; gap: 5px; font-size: 0.78em; color: white;
+      background:#2b579a; padding:5px 9px;
+      display:flex; align-items:center; gap:5px; font-size:0.78em; color:white;
     }
     .wca-w-icon {
-      background: white; color: #2b579a; font-weight: 900; font-size: 1.1em;
-      width: 17px; height: 17px; display: flex; align-items: center; justify-content: center;
-      border-radius: 2px; flex-shrink: 0; font-family: 'Exo 2', sans-serif;
+      background:white; color:#2b579a; font-weight:900; font-size:1.05em;
+      width:16px; height:16px; display:flex; align-items:center; justify-content:center;
+      border-radius:2px; flex-shrink:0; font-family:'Exo 2',sans-serif;
     }
-    .wca-w-name { opacity: 0.8; font-size: 0.82em; }
+    .wca-w-name { opacity:0.8; font-size:0.82em; }
     .wca-word-body {
-      flex: 1; background: white; margin: 5px; padding: 10px 12px;
-      display: flex; flex-direction: column; gap: 8px;
-      border-radius: 1px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-height: 190px;
+      flex:1; background:white; margin:5px; padding:10px 10px;
+      display:flex; flex-direction:column;
+      border-radius:1px; box-shadow:0 1px 3px rgba(0,0,0,0.1); min-height:182px; overflow:hidden;
     }
-    .wca-para { display: flex; align-items: center; flex-wrap: wrap; gap: 3px; }
-    .wca-seg  { height: 3px; background: #dde1e9; border-radius: 1px; flex-shrink: 0; }
-    .wca-tag {
-      border-radius: 2px; padding: 1px 5px; font-size: 0.78em; font-weight: 700;
-      font-family: inherit; white-space: nowrap;
+    /* Cursor zones — clickable gaps between paragraphs */
+    .wca-cz {
+      height:7px; cursor:text; position:relative;
+      border-radius:2px; flex-shrink:0; transition:background 0.1s;
     }
-    .wca-tag.normal    { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; }
-    .wca-tag.entering  { background: #dbeafe; border: 1px solid #93c5fd; color: #1d4ed8; animation: wca-pop 0.4s ease-out; }
-    .wca-tag.stale     { background: #fee2e2; border: 1px solid #fca5a5; color: #dc2626; }
-    .wca-tag.refreshed { background: #d1fae5; border: 1px solid #6ee7b7; color: #065f46; animation: wca-pop 0.4s ease-out; }
-    @keyframes wca-pop { from{opacity:0;transform:translateY(4px) scale(0.85)} to{opacity:1;transform:none} }
-    .wca-cursor { display: inline-block; width: 2px; height: 11px; background: #1d4ed8; margin-left: 2px; vertical-align: middle; animation: wca-blink 1s step-end infinite; }
+    .wca-cz:hover { background:rgba(29,78,216,0.07); }
+    .wca-cz.active::before {
+      content:''; position:absolute; left:22px; top:1px; bottom:1px;
+      width:2px; background:#1d4ed8; animation:wca-blink 1s step-end infinite;
+    }
+    /* Paragraph text lines */
+    .wca-para { display:flex; align-items:center; flex-wrap:wrap; gap:3px; flex-shrink:0; }
+    .wca-seg  { height:3px; background:#dde1e9; border-radius:1px; flex-shrink:0; }
+    .wca-tag  { border-radius:2px; padding:1px 5px; font-size:0.78em; font-weight:700; font-family:inherit; white-space:nowrap; }
+    .wca-tag.normal    { background:#dbeafe; border:1px solid #93c5fd; color:#1d4ed8; }
+    .wca-tag.entering  { background:#dbeafe; border:1px solid #93c5fd; color:#1d4ed8; animation:wca-pop 0.4s ease-out; }
+    .wca-tag.stale     { background:#fee2e2; border:1px solid #fca5a5; color:#dc2626; }
+    .wca-tag.refreshed { background:#d1fae5; border:1px solid #6ee7b7; color:#065f46; animation:wca-pop 0.4s ease-out; }
+    @keyframes wca-pop   { from{opacity:0;transform:translateY(4px) scale(0.85)} to{opacity:1;transform:none} }
     @keyframes wca-blink { 50%{opacity:0} }
+    /* Status bar */
     .wca-foot {
-      background: #040810; border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 5px 10px; display: flex; align-items: center; gap: 6px;
-      font-size: 0.76em; color: rgba(255,255,255,0.38); min-height: 26px;
+      background:#040810; border-top:1px solid rgba(255,255,255,0.06);
+      padding:5px 10px; display:flex; align-items:center; gap:5px;
+      font-size:0.74em; color:rgba(255,255,255,0.35); min-height:25px;
     }
-    .wca-pip { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; background: #38bdf8; animation: wca-pul 2s ease-in-out infinite; }
-    .wca-pip.warn { background: #f59e0b; animation: none; }
-    .wca-pip.ok   { background: #10b981; animation: none; }
+    .wca-pip { width:5px; height:5px; border-radius:50%; flex-shrink:0; background:#38bdf8; animation:wca-pul 2s ease-in-out infinite; }
+    .wca-pip.warn { background:#f59e0b; animation:none; }
+    .wca-pip.ok   { background:#10b981; animation:none; }
     @keyframes wca-pul { 0%,100%{opacity:0.3} 50%{opacity:1} }
   </style>
 </head>
@@ -682,33 +739,47 @@
     </div>
   </div>
 
-  <!-- Hero right: Word citation animation -->
+  <!-- Hero right: interactive Word citation demo -->
   <div class="hero-right">
-    <div class="wca">
-      <div class="wca-bar">
-        <div class="wca-bar-dots"><em class="wca-dot r"></em><em class="wca-dot y"></em><em class="wca-dot g"></em></div>
-        <span class="wca-bar-title">ExhiBytes  ·  Submissions.docx</span>
-        <div class="wca-bar-btns">
-          <span class="wca-tbtn" id="wca-cite">📌 Cite</span>
-          <span class="wca-tbtn wca-tbtn-a" id="wca-refresh">↻ Refresh All</span>
+    <div class="wca-wrap">
+      <!-- Tutorial instruction bar -->
+      <div class="tut-bar">
+        <div class="tut-top">
+          <span id="tut-step-num" class="tut-step-num">Step 1 / 5</span>
+        </div>
+        <div id="tut-instr" class="tut-instr">👆&nbsp; Click any exhibit row to select it for citation.</div>
+        <div class="tut-btns">
+          <button id="tut-skip"  class="tut-btn tut-skip">Skip →</button>
+          <button id="tut-reset" class="tut-btn" style="display:none">↺ Try again</button>
         </div>
       </div>
-      <div class="wca-body">
-        <div class="wca-app">
-          <div class="wca-app-thead"><span>Label</span><span>Description</span><span>Date</span></div>
-          <div id="wca-rows"></div>
-        </div>
-        <div class="wca-word">
-          <div class="wca-word-bar">
-            <span class="wca-w-icon">W</span>
-            <span class="wca-w-name">Submissions.docx</span>
+      <!-- Interactive widget -->
+      <div class="wca">
+        <div class="wca-bar">
+          <div class="wca-bar-dots"><em class="wca-dot r"></em><em class="wca-dot y"></em><em class="wca-dot g"></em></div>
+          <span class="wca-bar-title">ExhiBytes · Submissions.docx</span>
+          <div class="wca-bar-btns">
+            <button class="wca-tbtn" id="wca-cite">📌 Cite</button>
+            <button class="wca-tbtn wca-tbtn-a" id="wca-refresh">↻ Refresh All</button>
           </div>
-          <div class="wca-word-body" id="wca-word"></div>
         </div>
-      </div>
-      <div class="wca-foot">
-        <span class="wca-pip" id="wca-pip"></span>
-        <span id="wca-msg">Live citations — linked to your exhibit list</span>
+        <div class="wca-body">
+          <div class="wca-app">
+            <div class="wca-app-thead"><span>Label</span><span>Description</span><span>Date</span></div>
+            <div id="wca-rows"></div>
+          </div>
+          <div class="wca-word">
+            <div class="wca-word-bar">
+              <span class="wca-w-icon">W</span>
+              <span class="wca-w-name">Submissions.docx</span>
+            </div>
+            <div class="wca-word-body" id="wca-word"></div>
+          </div>
+        </div>
+        <div class="wca-foot">
+          <span class="wca-pip" id="wca-pip"></span>
+          <span id="wca-msg">Click a row to begin</span>
+        </div>
       </div>
     </div>
   </div>
@@ -1028,7 +1099,7 @@
           </div>
         </div>
         <div class="dl-card-body">
-          <a href="https://github.com/thegreatsze/Exhibit-AI/releases/download/v1.0.0/ExhiBytes-v1.0.0-Setup.zip" class="dl-btn" download>⬇ &nbsp;DOWNLOAD ExhiBytes-v1.0.0-Setup.zip</a>
+          <a href="ExhiBytes-v1.0.0-Setup.zip" class="dl-btn" download>⬇ &nbsp;DOWNLOAD ExhiBytes-v1.0.0-Setup.zip</a>
           <div class="dl-meta-tags">
             <span class="dl-tag">Windows</span>
             <span class="dl-tag">Electron</span>
@@ -1088,143 +1159,197 @@
 
 <script>
 (function(){
-  var phases=[
-    {
-      dur:2800,
-      rows:[
-        {l:'P-1',d:'Statement of Claim',t:'12 Jan'},
-        {l:'P-2',d:'Witness Statement', t:'3 Mar'},
-        {l:'P-3',d:'Emails Bundle',     t:'—'},
-      ],
-      sel:-1,
-      paras:[
-        {b:72,cite:{l:'P-1',c:'normal'},a:22},
-        {b:88},
-        {b:52,cite:{l:'P-2',c:'normal'},a:35},
-      ],
-      status:'Live citations in your Word document — linked to ExhiBytes',
-      pip:'',fc:false,fr:false,
-    },
-    {
-      dur:1800,
-      rows:[
-        {l:'P-1',d:'Statement of Claim',t:'12 Jan'},
-        {l:'P-2',d:'Witness Statement', t:'3 Mar'},
-        {l:'P-3',d:'Emails Bundle',     t:'—',sel:true},
-      ],
-      sel:2,
-      paras:[
-        {b:72,cite:{l:'P-1',c:'normal'},a:22},
-        {b:88},
-        {b:52,cite:{l:'P-2',c:'normal'},a:35},
-        {cursor:true},
-      ],
-      status:'Select exhibit + place cursor in Word, then click 📌 Cite',
-      pip:'',fc:false,fr:false,
-    },
-    {
-      dur:2500,
-      rows:[
-        {l:'P-1',d:'Statement of Claim',t:'12 Jan'},
-        {l:'P-2',d:'Witness Statement', t:'3 Mar'},
-        {l:'P-3',d:'Emails Bundle',     t:'—',sel:true},
-      ],
-      sel:2,
-      paras:[
-        {b:72,cite:{l:'P-1',c:'normal'},a:22},
-        {b:88},
-        {b:52,cite:{l:'P-2',c:'normal'},a:35},
-        {b:32,cite:{l:'P-3',c:'entering'},a:44},
-      ],
-      status:'[P-3] inserted — live content control in Submissions.docx',
-      pip:'',fc:true,fr:false,
-    },
-    {
-      dur:2800,
-      rows:[
-        {l:'P-1',d:'Statement of Claim',t:'12 Jan'},
-        {l:'P-2',d:'Expert Report',     t:'5 Mar',isNew:true},
-        {l:'P-3',d:'Witness Statement', t:'3 Mar',shift:true},
-        {l:'P-4',d:'Emails Bundle',     t:'—',    shift:true},
-      ],
-      sel:-1,
-      paras:[
-        {b:72,cite:{l:'P-1',c:'normal'},a:22},
-        {b:88},
-        {b:52,cite:{l:'P-2',c:'stale'}, a:35},
-        {b:32,cite:{l:'P-3',c:'stale'}, a:44},
-      ],
-      status:'New exhibit added — existing citations are now stale',
-      pip:'warn',fc:false,fr:false,
-    },
-    {
-      dur:2500,
-      rows:[
-        {l:'P-1',d:'Statement of Claim',t:'12 Jan'},
-        {l:'P-2',d:'Expert Report',     t:'5 Mar'},
-        {l:'P-3',d:'Witness Statement', t:'3 Mar'},
-        {l:'P-4',d:'Emails Bundle',     t:'—'},
-      ],
-      sel:-1,
-      paras:[
-        {b:72,cite:{l:'P-1',c:'normal'},  a:22},
-        {b:88},
-        {b:52,cite:{l:'P-3',c:'refreshed'},a:35},
-        {b:32,cite:{l:'P-4',c:'refreshed'},a:44},
-      ],
-      status:'✓ One click — [P-2]→[P-3] and [P-3]→[P-4] updated across document',
-      pip:'ok',fc:false,fr:true,
-    },
+  /* ── state ── */
+  var exh, sel, curPos, cits, step, renaming;
+  function resetState(){
+    exh=[{l:'P-1',d:'Statement of Claim',t:'12 Jan'},
+         {l:'P-2',d:'Witness Statement',  t:'3 Mar'},
+         {l:'P-3',d:'Emails Bundle',      t:'\u2014'}];
+    sel=-1; curPos=-1; cits=[]; step=0; renaming=false;
+  }
+  var STEPS=[
+    {n:'1 / 5',m:'\uD83D\uDC46\u00a0 Click any exhibit row to select it for citation.'},
+    {n:'2 / 5',m:'\u270F\uFE0F\u00a0 Double-click the description to rename it, then press Enter.'},
+    {n:'3 / 5',m:'\uD83D\uDCC4\u00a0 Click in the Word document where you want to insert the citation.'},
+    {n:'4 / 5',m:'\uD83D\uDCCC\u00a0 Click the Cite button to insert the citation at your cursor.'},
+    {n:'5 / 5',m:'\u2195\uFE0F\u00a0 Use \u25b2\u25bc to reorder exhibits \u2014 existing citations will go stale.'},
+    {n:'\u2713',  m:'\u21bb\u00a0 Click Refresh All to update all citations in your document.'},
+    {n:'\uD83C\uDF89',m:'\u2713 Done! All citations updated instantly. Click \u201cTry again\u201d to reset.'},
   ];
-  var phase=0;
+  var FOOT_MSG=['Click a row to select','Double-click the description to rename',
+    'Click in the document to place cursor','Click \uD83D\uDCCC Cite to insert',
+    'Reorder with \u25b2\u25bc \u2014 then refresh','Citations stale \u2014 click \u21bb Refresh All',
+    '\u2713 All citations updated'];
+  var FOOT_PIP=['','','','','warn','warn','ok'];
 
-  function renderRows(rows,sel){
-    var el=document.getElementById('wca-rows');
-    if(!el)return;
-    el.innerHTML=rows.map(function(r,i){
-      var c='wca-row';
-      if(r.isNew)c+=' new';
-      else if(r.shift)c+=' shift';
-      else if(i===sel||r.sel)c+=' sel';
-      return '<div class="'+c+'"><span class="wca-rl">'+r.l+'</span><span class="wca-rd">'+r.d+'</span><span class="wca-rdt">'+r.t+'</span></div>';
+  function $i(id){return document.getElementById(id);}
+  function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+  /* ── render rows ── */
+  function renderRows(){
+    var el=$i('wca-rows'); if(!el)return;
+    var hlAll=(step===0), hlDesc=(step===1), showMv=(step>=4), hlMv=(step===4);
+    el.innerHTML=exh.map(function(ex,i){
+      var isSel=(i===sel);
+      var rowCls='wca-row'+(isSel?' sel':'')+(hlAll?' tut-hl':'');
+      var dCls='wca-rd'+(isSel&&hlDesc?' tut-hl':'');
+      var dHtml=renaming&&isSel
+        ?'<input id="wca-ri" class="wca-rename-input" value="'+esc(ex.d)+'">'
+        :'<span class="'+dCls+'" data-ri="'+i+'">'+esc(ex.d)+'</span>';
+      var mvHtml='';
+      if(showMv){
+        var mc='wca-mv'+(hlMv?' tut-hl':'');
+        mvHtml='<div class="wca-move-col">'
+          +'<button class="'+mc+'" data-up="'+i+'"'+(i===0?' disabled':'')+' tabindex="-1">\u25b2</button>'
+          +'<button class="'+mc+'" data-dn="'+i+'"'+(i===exh.length-1?' disabled':'')+' tabindex="-1">\u25bc</button>'
+          +'</div>';
+      }
+      return '<div class="'+rowCls+'" data-ri="'+i+'">'
+        +'<span class="wca-rl">'+esc(ex.l)+'</span>'
+        +dHtml
+        +'<span class="wca-rdt">'+esc(ex.t)+'</span>'
+        +mvHtml+'</div>';
     }).join('');
+
+    el.querySelectorAll('[data-ri].wca-row').forEach(function(row){
+      row.addEventListener('click',function(e){
+        if(e.target.closest('.wca-move-col'))return;
+        var i=parseInt(row.dataset.ri,10);
+        if(step===0){sel=i;advance();return;}
+        if(!renaming){sel=i;renderRows();}
+      });
+    });
+    el.querySelectorAll('.wca-rd').forEach(function(sp){
+      sp.addEventListener('dblclick',function(){
+        var i=parseInt(sp.dataset.ri,10);
+        if(step===1&&i===sel){renaming=true;renderRows();activateRename();}
+      });
+    });
+    el.querySelectorAll('[data-up]').forEach(function(btn){
+      btn.addEventListener('click',function(e){e.stopPropagation();
+        var i=parseInt(btn.dataset.up,10);
+        if(i>0){swapExh(i,i-1);afterReorder();}
+      });
+    });
+    el.querySelectorAll('[data-dn]').forEach(function(btn){
+      btn.addEventListener('click',function(e){e.stopPropagation();
+        var i=parseInt(btn.dataset.dn,10);
+        if(i<exh.length-1){swapExh(i,i+1);afterReorder();}
+      });
+    });
+    if(renaming)activateRename();
   }
 
-  function renderWord(paras){
-    var el=document.getElementById('wca-word');
-    if(!el)return;
-    el.innerHTML=paras.map(function(p){
-      if(p.cursor)return '<div class="wca-para"><span class="wca-cursor"></span></div>';
-      var h='<div class="wca-para">';
-      if(p.b)h+='<div class="wca-seg" style="width:'+p.b+'%"></div>';
-      if(p.cite)h+='<span class="wca-tag '+p.cite.c+'">'+p.cite.l+'</span>';
-      if(p.a)h+='<div class="wca-seg" style="width:'+p.a+'%"></div>';
-      return h+'</div>';
-    }).join('');
+  function activateRename(){
+    var inp=$i('wca-ri'); if(!inp)return;
+    var done=false;
+    inp.focus(); inp.select();
+    function commit(){
+      if(done)return; done=true;
+      var v=inp.value.trim(); if(v)exh[sel].d=v;
+      renaming=false;
+      if(step===1)advance(); else{renderRows();renderWord();}
+    }
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Enter')commit();
+      if(e.key==='Escape'){done=true;renaming=false;renderRows();}
+    });
+    inp.addEventListener('blur',commit);
   }
 
-  function render(p){
-    var ci=document.getElementById('wca-cite');
-    var ri=document.getElementById('wca-refresh');
-    var pip=document.getElementById('wca-pip');
-    var msg=document.getElementById('wca-msg');
-    if(!ci)return;
-    renderRows(p.rows,p.sel);
-    renderWord(p.paras);
-    ci.className='wca-tbtn'+(p.fc?' wca-flash':'');
-    ri.className='wca-tbtn wca-tbtn-a'+(p.fr?' wca-flash':'');
-    pip.className='wca-pip'+(p.pip==='warn'?' warn':p.pip==='ok'?' ok':'');
-    msg.textContent=p.status;
+  function swapExh(a,b){var t=exh[a];exh[a]=exh[b];exh[b]=t;relabel();}
+  function relabel(){var p=exh[0].l.replace(/\d+$/,'');exh.forEach(function(e,i){e.l=p+(i+1);});}
+  function afterReorder(){
+    cits.forEach(function(c){c.stale=true;c.fresh=false;});
+    if(step===4)advance(); else{renderRows();renderWord();}
   }
 
-  function tick(){
-    var p=phases[phase];
-    render(p);
-    setTimeout(function(){phase=(phase+1)%phases.length;tick();},p.dur);
+  /* ── render Word doc ── */
+  var WW=[65,80,52,72,58];
+  function renderWord(){
+    var el=$i('wca-word'); if(!el)return;
+    var hlCz=(step===2), html='';
+    for(var pos=0;pos<5;pos++){
+      var czCls='wca-cz'+(hlCz?' tut-hl':'')+(curPos===pos?' active':'');
+      html+='<div class="'+czCls+'" data-pos="'+pos+'"></div>';
+      if(pos<4){
+        var pCits=cits.filter(function(c){return c.pos===pos;});
+        html+='<div class="wca-para">';
+        if(pCits.length){
+          html+='<div class="wca-seg" style="width:'+Math.round(WW[pos]*0.35)+'%"></div>';
+          pCits.forEach(function(c){
+            var cls=c.stale?'stale':(c.fresh?'refreshed':'normal');
+            html+='<span class="wca-tag '+cls+'">'+esc(c.label)+'</span>';
+          });
+          html+='<div class="wca-seg" style="width:'+Math.round(WW[pos]*0.38)+'%"></div>';
+        } else {
+          html+='<div class="wca-seg" style="width:'+WW[pos]+'%"></div>';
+        }
+        html+='</div>';
+      }
+    }
+    el.innerHTML=html;
+    el.querySelectorAll('.wca-cz').forEach(function(cz){
+      cz.addEventListener('click',function(){
+        if(step!==2)return;
+        curPos=parseInt(cz.dataset.pos,10); renderWord(); advance();
+      });
+    });
   }
 
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',tick);}
-  else{setTimeout(tick,0);}
+  /* ── tutorial ── */
+  function advance(){step++;refresh();}
+  function refresh(){renderRows();renderWord();updateTut();updateButtons();updateFoot();}
+
+  function updateTut(){
+    var sn=$i('tut-step-num'),si=$i('tut-instr'),sk=$i('tut-skip'),sr=$i('tut-reset');
+    if(!sn)return;
+    var s=STEPS[Math.min(step,STEPS.length-1)];
+    sn.textContent=s.n; si.innerHTML=s.m;
+    var done=(step>=STEPS.length-1);
+    if(sk)sk.style.display=done?'none':'inline-block';
+    if(sr)sr.style.display=done?'inline-block':'none';
+  }
+
+  function updateButtons(){
+    var ce=$i('wca-cite'),re=$i('wca-refresh'); if(!ce)return;
+    ce.className='wca-tbtn'+(step===3?' wca-tbtn-a tut-hl':'');
+    re.className='wca-tbtn wca-tbtn-a'+(step===5?' tut-hl':'');
+  }
+
+  function updateFoot(){
+    var pip=$i('wca-pip'),msg=$i('wca-msg'); if(!pip)return;
+    var idx=Math.min(step,FOOT_MSG.length-1);
+    pip.className='wca-pip'+(FOOT_PIP[idx]?' '+FOOT_PIP[idx]:'');
+    msg.textContent=FOOT_MSG[idx];
+  }
+
+  /* ── button handlers ── */
+  function bindButtons(){
+    var ce=$i('wca-cite'),re=$i('wca-refresh'),sk=$i('tut-skip'),sr=$i('tut-reset');
+    if(ce)ce.addEventListener('click',function(){
+      if(step!==3||sel<0||curPos<0)return;
+      cits.push({pos:curPos,label:exh[sel].l,stale:false,fresh:false});
+      curPos=-1; advance();
+    });
+    if(re)re.addEventListener('click',function(){
+      if(step!==5)return;
+      cits.forEach(function(c){c.stale=false;c.fresh=true;}); advance();
+    });
+    if(sk)sk.addEventListener('click',function(){if(step<STEPS.length-1)advance();});
+    if(sr)sr.addEventListener('click',function(){
+      resetState(); sr.style.display='none';
+      var s2=$i('tut-skip'); if(s2)s2.style.display='inline-block';
+      refresh();
+    });
+  }
+
+  function init(){
+    if(!$i('wca-rows'))return;
+    resetState(); bindButtons(); refresh();
+  }
+  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}
+  else{setTimeout(init,0);}
 })();
 </script>
 </body>
