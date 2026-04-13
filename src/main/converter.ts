@@ -180,9 +180,29 @@ export async function countPdfPages(pdfPath: string): Promise<number> {
     const counts = [...raw.matchAll(/\/Count\s+(\d+)/g)].map(m => parseInt(m[1], 10))
     if (counts.length > 0) return Math.max(...counts)
 
-    // Last resort: count individual /Type /Page entries
+    // Second fallback: count individual /Type /Page entries
     const pages = raw.match(/\/Type\s*\/Page[^s]/g)
-    return pages ? pages.length : 0
+    if (pages && pages.length > 0) return pages.length
+
+    // Final fallback: pdfjs-dist handles strongly-encrypted PDFs that pdf-lib
+    // and the raw scan cannot. This is the same engine used by the preview pane.
+    try {
+      const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs') as any
+      pdfjsLib.GlobalWorkerOptions.workerSrc = ''
+      const loadingTask = pdfjsLib.getDocument({
+        data: new Uint8Array(bytes),
+        useWorkerFetch: false,
+        isEvalSupported: false,
+        useSystemFonts: true,
+        password: ''
+      })
+      const pdfDoc = await loadingTask.promise
+      const count = pdfDoc.numPages as number
+      await pdfDoc.destroy()
+      if (count > 0) return count
+    } catch { /* give up */ }
+
+    return 0
   } catch {
     return 0
   }
