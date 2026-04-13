@@ -37,15 +37,11 @@ export async function exportBundle(
   }
 
   // ── Pre-load source PDFs ──────────────────────────────────────────────────────
-  const srcDocs: (PDFDocument | null)[] = []
+  const srcDocs: PDFDocument[] = []
   const validExhibits: Exhibit[] = []
   for (const exhibit of exhibits) {
     if (!fs.existsSync(exhibit.pdfPath)) continue
-    try {
-      srcDocs.push(await PDFDocument.load(fs.readFileSync(exhibit.pdfPath), { ignoreEncryption: true }))
-    } catch {
-      srcDocs.push(null)   // mark as unloadable; handled in the render loop
-    }
+    srcDocs.push(await PDFDocument.load(fs.readFileSync(exhibit.pdfPath), { ignoreEncryption: true }))
     validExhibits.push(exhibit)
   }
 
@@ -55,9 +51,7 @@ export async function exportBundle(
   let toc = options.includeCoverPage ? 2 : 1
   for (let i = 0; i < validExhibits.length; i++) {
     dividerPageNums.push(toc)
-    let pc = 1
-    try { pc = srcDocs[i]?.getPageCount() ?? 1 } catch { pc = 1 }
-    toc += 1 + pc
+    toc += 1 + srcDocs[i].getPageCount()
   }
 
   // ── Cover page (not numbered) ─────────────────────────────────────────────────
@@ -115,7 +109,7 @@ export async function exportBundle(
     const srcDoc = srcDocs[i]
     const exhibit = validExhibits[i]
 
-    // ── Divider page ─────────────────────────────────────────────────────────
+    // ── Divider page (freshly created — can always draw on it) ────────────────
     const divider = mergedPdf.addPage(pageSize)
     const cx = pageWidth / 2, cy = pageHeight / 2
 
@@ -136,56 +130,17 @@ export async function exportBundle(
     }
     stampNumber(divider, pageWidth, pageHeight)
 
-    // ── Exhibit pages ─────────────────────────────────────────────────────────
-    // Guard the entire page-embedding block. For encrypted or structurally
-    // unusual PDFs, pdf-lib may throw at getPageCount(), getPage(), or
-    // embedPages() with "Expected instance of PDFDict" errors. Catching here
-    // prevents one bad exhibit from aborting the whole export; a placeholder
-    // page is inserted instead.
-    if (srcDoc === null) {
-      // PDF failed to load entirely
-      const [w, h] = pageSize
-      const errPage = mergedPdf.addPage([w, h])
-      const msg = 'This exhibit could not be loaded (encrypted or unsupported PDF).'
-      errPage.drawText(msg, { x: margin, y: h / 2, size: 9, font, color: rgb(0.6, 0.2, 0.2) })
-      stampNumber(errPage, w, h)
-      continue
-    }
-
-    let srcPageCount: number
-    try { srcPageCount = srcDoc.getPageCount() } catch { srcPageCount = 0 }
-
-    if (srcPageCount === 0) {
-      const [w, h] = pageSize
-      const errPage = mergedPdf.addPage([w, h])
-      const msg = 'This exhibit could not be embedded (encrypted or unsupported PDF).'
-      errPage.drawText(msg, { x: margin, y: h / 2, size: 9, font, color: rgb(0.6, 0.2, 0.2) })
-      stampNumber(errPage, w, h)
-      continue
-    }
-
-    let embedded: Awaited<ReturnType<typeof mergedPdf.embedPages>>
-    try {
-      embedded = await mergedPdf.embedPages(
-        Array.from({ length: srcPageCount }, (_, j) => srcDoc.getPage(j))
-      )
-    } catch {
-      const [w, h] = pageSize
-      const errPage = mergedPdf.addPage([w, h])
-      const msg = 'This exhibit could not be embedded (encrypted or unsupported PDF).'
-      errPage.drawText(msg, { x: margin, y: h / 2, size: 9, font, color: rgb(0.6, 0.2, 0.2) })
-      stampNumber(errPage, w, h)
-      continue
-    }
+    // ── Exhibit pages via embedPages → fresh page ─────────────────────────────
+    // embedPages embeds each source page as a Form XObject in mergedPdf, then
+    // we paint it onto a brand-new page. New pages accept drawText reliably
+    // regardless of the source PDF's content stream structure.
+    const srcPageCount = srcDoc.getPageCount()
+    const embedded = await mergedPdf.embedPages(
+      Array.from({ length: srcPageCount }, (_, j) => srcDoc.getPage(j))
+    )
 
     for (let j = 0; j < srcPageCount; j++) {
-      let w: number, h: number
-      try {
-        const sz = srcDoc.getPage(j).getSize()
-        w = sz.width; h = sz.height
-      } catch {
-        w = pageWidth; h = pageHeight
-      }
+      const { width: w, height: h } = srcDoc.getPage(j).getSize()
       const newPage = mergedPdf.addPage([w, h])
 
       // Paint the original page content
