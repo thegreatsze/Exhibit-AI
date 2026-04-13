@@ -134,10 +134,30 @@ export async function exportBundle(
     // embedPages embeds each source page as a Form XObject in mergedPdf, then
     // we paint it onto a brand-new page. New pages accept drawText reliably
     // regardless of the source PDF's content stream structure.
+    //
+    // Some encrypted PDFs load without throwing (ignoreEncryption:true) but
+    // have undefined internal page objects that cause embedPages to crash.
+    // We catch that per-exhibit and insert a notice page instead of aborting
+    // the entire export.
     const srcPageCount = srcDoc.getPageCount()
-    const embedded = await mergedPdf.embedPages(
-      Array.from({ length: srcPageCount }, (_, j) => srcDoc.getPage(j))
-    )
+    let embedded: Awaited<ReturnType<typeof mergedPdf.embedPages>> | null = null
+    try {
+      embedded = await mergedPdf.embedPages(
+        Array.from({ length: srcPageCount }, (_, j) => srcDoc.getPage(j))
+      )
+    } catch {
+      // Could not embed — insert a single placeholder page for this exhibit
+      const [w, h] = pageSize
+      const errPage = mergedPdf.addPage([w, h])
+      const msg = 'This exhibit could not be embedded (encrypted or unsupported PDF).'
+      const msgW = font.widthOfTextAtSize(msg, 9)
+      errPage.drawText(msg, {
+        x: (w - msgW) / 2, y: h / 2,
+        size: 9, font, color: rgb(0.6, 0.2, 0.2)
+      })
+      stampNumber(errPage, w, h)
+      continue
+    }
 
     for (let j = 0; j < srcPageCount; j++) {
       const { width: w, height: h } = srcDoc.getPage(j).getSize()

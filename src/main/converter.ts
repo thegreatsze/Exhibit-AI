@@ -164,8 +164,22 @@ async function convertEmlToPdf(inputPath: string, outputPath: string): Promise<v
 export async function countPdfPages(pdfPath: string): Promise<number> {
   try {
     const bytes = fs.readFileSync(pdfPath)
-    const doc = await PDFDocument.load(bytes, { ignoreEncryption: true })
-    return doc.getPageCount()
+    // Primary: let pdf-lib parse the page tree
+    try {
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true })
+      return doc.getPageCount()
+    } catch {
+      // Fallback: scan raw bytes for the Pages /Count entry.
+      // Works for encrypted / structurally unusual PDFs that pdf-lib
+      // can load but then fails to traverse internally.
+      const raw = bytes.toString('latin1')
+      // /Count N  (the root Pages node carries the total page count)
+      const m = raw.match(/\/Count\s+(\d+)/)
+      if (m) return parseInt(m[1], 10)
+      // Last resort: count individual /Type /Page (not /Pages) objects
+      const pages = raw.match(/\/Type\s*\/Page[^s]/g)
+      return pages ? pages.length : 0
+    }
   } catch {
     return 0
   }
