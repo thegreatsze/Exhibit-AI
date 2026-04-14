@@ -36,6 +36,25 @@
       overflow-x: hidden;
     }
 
+    /* Scanline overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.04) 2px, rgba(0,0,0,0.04) 4px
+      );
+    }
+
+    /* Blinking cursor */
+    .px-cursor {
+      display: inline-block; width: 7px; height: 0.9em;
+      background: var(--blue3); opacity: 0.9;
+      animation: blink-cur 1s step-end infinite;
+      vertical-align: middle; margin-left: 3px; border-radius: 1px;
+    }
+    @keyframes blink-cur { 50% { opacity: 0; } }
+
     /* ── NAV ─────────────────────────────────────────────────── */
     nav {
       position: sticky; top: 0; z-index: 100;
@@ -109,12 +128,32 @@
       font-weight: 900; font-size: clamp(3.5rem, 8vw, 6rem);
       letter-spacing: -0.02em; line-height: 1;
       margin-bottom: 0.25rem;
+      position: relative;
     }
     .hero h1 span { color: var(--blue3); }
+    /* Grain overlay on title */
+    .hero h1::before {
+      content: '';
+      position: absolute; inset: -4px;
+      pointer-events: none; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.055;
+      mix-blend-mode: overlay;
+    }
     .hero-byline {
       color: var(--muted); font-size: 0.85rem; font-weight: 600;
       font-family: 'Exo 2', sans-serif; margin-bottom: 1.25rem;
       letter-spacing: 0.01em;
+      position: relative;
+    }
+    /* Grain overlay on byline */
+    .hero-byline::before {
+      content: '';
+      position: absolute; inset: -4px;
+      pointer-events: none; z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.055;
+      mix-blend-mode: overlay;
     }
     .hero-tagline {
       font-size: clamp(1.1rem, 3vw, 1.4rem); color: rgba(255,255,255,0.85);
@@ -300,6 +339,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
+      align-items: start;
     }
     .feature-card {
       background: var(--dark); border: 1px solid var(--border);
@@ -308,6 +348,15 @@
       position: relative; overflow: hidden;
     }
     .feature-card:hover { border-color: rgba(96,165,250,0.35); transform: translateY(-2px); }
+    /* Asymmetric bento spans */
+    .features-grid .feature-card:nth-child(1) { grid-column: span 2; }   /* Drag-and-Drop: long format list */
+    .features-grid .feature-card:nth-child(4) { grid-column: span 2; }   /* Word Citation: key feature */
+    .features-grid .feature-card:nth-child(9) { grid-column: span 2; }   /* 100% Offline: key selling point */
+    /* Compact padding for short-content cards */
+    .features-grid .feature-card:nth-child(3),
+    .features-grid .feature-card:nth-child(5),
+    .features-grid .feature-card:nth-child(7),
+    .features-grid .feature-card:nth-child(8) { padding: 1.35rem; }
     .feature-icon {
       width: 44px; height: 44px; border-radius: 10px;
       background: rgba(37,99,235,0.15); border: 1px solid rgba(96,165,250,0.2);
@@ -693,6 +742,13 @@
     }
     @media (max-width: 600px) {
       .features-grid { grid-template-columns: 1fr; }
+      .features-grid .feature-card:nth-child(1),
+      .features-grid .feature-card:nth-child(4),
+      .features-grid .feature-card:nth-child(9) { grid-column: span 1; }
+      .features-grid .feature-card:nth-child(3),
+      .features-grid .feature-card:nth-child(5),
+      .features-grid .feature-card:nth-child(7),
+      .features-grid .feature-card:nth-child(8) { padding: 1.75rem; }
       .req-grid { grid-template-columns: 1fr; }
       .download-top { flex-direction: column; }
       .app-mockup { display: none; }
@@ -817,7 +873,7 @@
   <div class="hero-content">
     <div class="pixel-badge">Legal Exhibit Management · Desktop App</div>
     <h1>Exhi<span>Bytes</span></h1>
-    <p class="hero-byline" style="margin-top:1.5rem">Built by Tan Sze Yao</p>
+    <p class="hero-byline" style="margin-top:1.5rem">Built by Tan Sze Yao<span class="px-cursor"></span></p>
     <p class="hero-tagline">
       The Word-integrated desktop tool that allows you to <strong>manage, cite and export</strong> your exhibits with minimal fuss. New piece of evidence coming in late? <strong>Refresh citations with just one click.</strong>
     </p>
@@ -954,7 +1010,7 @@
       <div class="feature-card">
         <div class="feature-icon">📦</div>
         <h3>Export Bundle</h3>
-        <p>Export the entire exhibit bundle as a single ZIP file — numbered PDFs in a flat folder, ready to attach to court submissions or share with counterparts.</p>
+        <p>Export the entire exhibit bundle as a single PDF file, ready to attach to court submissions or share with counterparts.</p>
       </div>
 
       <div class="feature-card">
